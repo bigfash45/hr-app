@@ -1,0 +1,776 @@
+// NowNowHR — multi-tenant HRMS domain model
+//
+// TENANCY RULE: every business table carries `companyId` and has a Row-Level
+// Security policy on it (see prisma/migrations/*_rls). One database, one schema,
+// isolation enforced in three places — application tenant context, RLS at the
+// database, and company-scoped storage prefixes (PRD §11.4).
+//
+// The only tables without `companyId` are the group-level ones: Company itself,
+// and the audit log (which spans companies for Group HR).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+// ─── Enums ──────────────────────────────────────────────────────────────────
+
+/// PRD §4. Exactly one per user, and NOT cumulative — a Line Manager does not
+/// inherit HR Manager rights. Scope is derived from this in code, never ranked.
+enum Role {
+  GROUP_HR_MANAGER
+  LOCAL_HR_MANAGER
+  LINE_MANAGER
+  EMPLOYEE
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERN
+  NYSC
+}
+
+enum EmployeeStatus {
+  ACTIVE
+  ON_PROBATION
+  SUSPENDED
+  DEACTIVATED
+}
+
+/// PRD §6.4.
+enum AttendanceStatus {
+  PRESENT
+  PRESENT_LATE
+  ABSENT
+  ON_LEAVE
+  WORK_FROM_HOME
+  PUBLIC_HOLIDAY
+}
+
+enum LeaveStatus {
+  DRAFT
+  PENDING_LINE_MANAGER
+  PENDING_HR
+  PENDING_GROUP_HR
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum ApprovalDecision {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+/// Which level in the chain an approval represents (PRD §6.5).
+enum ApprovalLevel {
+  LINE_MANAGER
+  LOCAL_HR
+  GROUP_HR
+}
+
+enum CorrectionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+}
+
+/// PRD §11.1 data classification, recorded on audit entries so we can prove
+/// who touched Tier 1 data and when.
+enum DataTier {
+  TIER_1_HIGHLY_SENSITIVE
+  TIER_2_PERSONAL
+  TIER_3_OPERATIONAL
+}
+
+// ─── Tenancy ────────────────────────────────────────────────────────────────
+
+/// A subsidiary or operational entity. The tenant boundary.
+model Company {
+  id   String @id @default(uuid())
+  /// Short code staff type at sign-in (the "001122" on the login screen).
+  code String @unique
+  name String
+
+  /// Registered/legal name, for payslips and reports.
+  legalName    String?
+  addressLine  String?
+  city         String?
+  state        String?
+  country      String  @default("Nigeria")
+  timezone     String  @default("Africa/Lagos")
+  /// PRD §10.4 — Nigeria only, all entities in Naira.
+  currency     String  @default("NGN")
+  logoUrl      String?
+
+  /// Working days as ISO weekday numbers, 1 = Monday. Default Mon-Fri.
+  workingDays  Int[]   @default([1, 2, 3, 4, 5])
+  /// Local time, "HH:mm".
+  workdayStart String  @default("08:00")
+  workdayEnd   String  @default("17:00")
+  /// Minutes after workdayStart that still count as on time (PRD glossary).
+  graceMinutes Int     @default(15)
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users              User[]
+  departments        Department[]
+  employees          Employee[]
+  leaveTypes         LeaveType[]
+  leaveRequests      LeaveRequest[]
+  leaveBalances      LeaveBalance[]
+  attendanceRecords  AttendanceRecord[]
+  corrections        AttendanceCorrection[]
+  payslips           Payslip[]
+  publicHolidays     PublicHoliday[]
+  notifications      Notification[]
+  onboardingTasks    OnboardingTask[]
+  documents          EmployeeDocument[]
+  featureFlags       FeatureFlag[]
+
+  @@index([code])
+  @@map("companies")
+}
+
+// ─── Identity ───────────────────────────────────────────────────────────────
+
+model User {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  email        String
+  /// Argon2id. PRD §11.2 names bcrypt cost >=12 as the minimum bar; Argon2id is
+  /// the stronger current default and clears it.
+  passwordHash String  @map("password_hash")
+  role         Role
+
+  isActive     Boolean   @default(true)
+  mustSetPassword Boolean @default(true) @map("must_set_password")
+  lastLoginAt  DateTime? @map("last_login_at")
+
+  /// Lockout after repeated failures (PRD §6.1).
+  failedLoginCount Int       @default(0) @map("failed_login_count")
+  lockedUntil      DateTime? @map("locked_until")
+
+  employee Employee?
+
+  refreshTokens  RefreshToken[]
+  passwordResets PasswordReset[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// Email is unique per company, not globally: the same person could exist in
+  /// two sister companies, and a global unique would silently block that.
+  @@unique([companyId, email])
+  @@index([companyId, role])
+  @@map("users")
+}
+
+/// One row per issued refresh token, so rotation can detect reuse.
+///
+/// If a token that was already rotated is presented again, the family is
+/// compromised — someone replayed a stolen token — and every token for that user
+/// is revoked (PRD §11.2 asks for rotation; detection is what makes it useful).
+model RefreshToken {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// SHA-256 of the token. Never store the token itself.
+  tokenHash String    @unique @map("token_hash")
+  /// Chains rotations together so a replay can revoke the whole family.
+  familyId  String    @map("family_id")
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  /// Set when this token was legitimately exchanged for a new one.
+  rotatedAt DateTime? @map("rotated_at")
+
+  userAgent String? @map("user_agent")
+  ipAddress String? @map("ip_address")
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([familyId])
+  @@map("refresh_tokens")
+}
+
+/// Single-use reset link, expiring after 24h (PRD §6.1).
+model PasswordReset {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("password_resets")
+}
+
+// ─── Organisation ───────────────────────────────────────────────────────────
+
+model Department {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+
+  /// Department head. Optional so a department can exist before one is named.
+  headId String?   @unique @map("head_id")
+  head   Employee? @relation("DepartmentHead", fields: [headId], references: [id], onDelete: SetNull)
+
+  employees Employee[] @relation("DepartmentMembers")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, name])
+  @@index([companyId])
+  @@map("departments")
+}
+
+model Employee {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Human-facing staff number, e.g. "D1234". Also how payslip filenames match.
+  employeeNumber String @map("employee_number")
+
+  /// Login account. Optional: a record can exist before access is granted.
+  userId String? @unique @map("user_id")
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // ── Tier 2, personal (PRD §11.1) ──
+  firstName   String    @map("first_name")
+  lastName    String    @map("last_name")
+  middleName  String?   @map("middle_name")
+  email       String
+  phone       String?
+  dateOfBirth DateTime? @map("date_of_birth") @db.Date
+  gender      String?
+  maritalStatus String? @map("marital_status")
+  nationality String?   @default("Nigerian")
+  addressLine String?   @map("address_line")
+  city        String?
+  state       String?
+
+  photoUrl String? @map("photo_url")
+
+  // ── Employment ──
+  jobTitle       String         @map("job_title")
+  employmentType EmploymentType @default(FULL_TIME) @map("employment_type")
+  status         EmployeeStatus @default(ACTIVE)
+  startDate      DateTime       @map("start_date") @db.Date
+  probationEndDate DateTime?    @map("probation_end_date") @db.Date
+  contractEndDate  DateTime?    @map("contract_end_date") @db.Date
+  workLocation     String?      @map("work_location")
+
+  departmentId String?     @map("department_id")
+  department   Department? @relation("DepartmentMembers", fields: [departmentId], references: [id], onDelete: SetNull)
+
+  /// Single reporting line for Phase 0 (PRD §17 Q13 — dotted-line reporting
+  /// deferred). Self-relation, so a manager is just another employee.
+  managerId String?    @map("manager_id")
+  manager   Employee?  @relation("ReportingLine", fields: [managerId], references: [id], onDelete: SetNull)
+  reports   Employee[] @relation("ReportingLine")
+
+  headOfDepartment Department? @relation("DepartmentHead")
+
+  // ── Tier 1, highly sensitive (PRD §11.1) ──
+  // Encrypted at rest by the application layer before they reach Postgres, so
+  // these columns hold ciphertext. Readable only by Local HR and the employee
+  // themselves (PRD §7.2).
+  salaryAmount     String? @map("salary_amount")
+  salaryCurrency   String? @default("NGN") @map("salary_currency")
+  payFrequency     String? @map("pay_frequency")
+  bankName         String? @map("bank_name")
+  bankAccountNumber String? @map("bank_account_number")
+  /// Pension Fund Administrator.
+  pfaName          String? @map("pfa_name")
+  /// Retirement Savings Account PIN.
+  rsaPin           String? @map("rsa_pin")
+  taxId            String? @map("tax_id")
+  /// National Identity Number.
+  nin              String?
+  /// Bank Verification Number.
+  bvn              String?
+
+  /// Visible to Local HR only (PRD §7.2).
+  hrNotes String? @map("hr_notes")
+
+  // ── Deactivation (PRD §6.3) ──
+  deactivatedAt     DateTime? @map("deactivated_at")
+  deactivationReason String?  @map("deactivation_reason")
+  deactivatedById   String?   @map("deactivated_by_id")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attendanceRecords AttendanceRecord[]
+  corrections       AttendanceCorrection[] @relation("CorrectionRequester")
+  leaveRequests     LeaveRequest[]         @relation("LeaveRequester")
+  leaveApprovals    LeaveApproval[]        @relation("LeaveApprover")
+  leaveBalances     LeaveBalance[]
+  payslips          Payslip[]
+  onboardingTasks   OnboardingTask[]       @relation("OnboardingSubject")
+  assignedTasks     OnboardingTask[]       @relation("OnboardingAssignee")
+  documents         EmployeeDocument[]
+  notifications     Notification[]
+
+  @@unique([companyId, employeeNumber])
+  @@unique([companyId, email])
+  @@index([companyId, status])
+  @@index([companyId, departmentId])
+  @@index([managerId])
+  @@map("employees")
+}
+
+// ─── Attendance (PRD §6.4) ──────────────────────────────────────────────────
+
+model AttendanceRecord {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  employeeId String   @map("employee_id")
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  /// The working day this belongs to, in company-local time. Separate from the
+  /// clock-in timestamp so a late-night shift still lands on the right day.
+  workDate DateTime @map("work_date") @db.Date
+
+  clockInAt  DateTime? @map("clock_in_at")
+  clockOutAt DateTime? @map("clock_out_at")
+
+  status AttendanceStatus @default(ABSENT)
+
+  /// Captured on clock-in for the audit trail (PRD §6.4). Not verification —
+  /// browser clock-in remains susceptible to buddy-clocking (PRD §16.2).
+  clockInIp        String? @map("clock_in_ip")
+  clockInUserAgent String? @map("clock_in_user_agent")
+  clockOutIp       String? @map("clock_out_ip")
+
+  /// Set when HR overrides a record; the reason is mandatory and audited.
+  isManualEntry  Boolean @default(false) @map("is_manual_entry")
+  manualReason   String? @map("manual_reason")
+  manualBy       String? @map("manual_by")
+
+  corrections AttendanceCorrection[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// One record per employee per day — the natural key, and what makes a
+  /// double clock-in a 409 instead of a duplicate row.
+  @@unique([employeeId, workDate])
+  @@index([companyId, workDate])
+  @@index([companyId, status])
+  @@map("attendance_records")
+}
+
+/// A request to amend an attendance record. Window is the last 7 days and it
+/// routes to the Line Manager (PRD §6.4).
+model AttendanceCorrection {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  attendanceRecordId String           @map("attendance_record_id")
+  attendanceRecord   AttendanceRecord @relation(fields: [attendanceRecordId], references: [id], onDelete: Cascade)
+
+  requestedById String   @map("requested_by_id")
+  requestedBy   Employee @relation("CorrectionRequester", fields: [requestedById], references: [id], onDelete: Cascade)
+
+  requestedClockIn  DateTime? @map("requested_clock_in")
+  requestedClockOut DateTime? @map("requested_clock_out")
+  requestedStatus   AttendanceStatus? @map("requested_status")
+  reason            String
+
+  status      CorrectionStatus @default(PENDING)
+  reviewedById String?         @map("reviewed_by_id")
+  reviewedAt   DateTime?       @map("reviewed_at")
+  reviewNote   String?         @map("review_note")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId, status])
+  @@index([requestedById])
+  @@map("attendance_corrections")
+}
+
+// ─── Leave (PRD §6.5, §12) ──────────────────────────────────────────────────
+
+model LeaveType {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  name String
+  code String
+
+  /// Annual entitlement in working days. Maternity/paternity are stored in days
+  /// too (12 weeks = 60 working days) so one unit governs every calculation.
+  defaultDays Int @map("default_days")
+
+  isPaid          Boolean @default(true) @map("is_paid")
+  allowCarryOver  Boolean @default(false) @map("allow_carry_over")
+  maxCarryOverDays Int    @default(0) @map("max_carry_over_days")
+
+  /// Above this many days the request escalates to Group HR (PRD §6.5 — unpaid
+  /// leave over 5 days). Null means it never escalates.
+  groupHrThresholdDays Int? @map("group_hr_threshold_days")
+
+  requiresDocument Boolean @default(false) @map("requires_document")
+  isActive         Boolean @default(true) @map("is_active")
+
+  requests LeaveRequest[]
+  balances LeaveBalance[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, code])
+  @@index([companyId])
+  @@map("leave_types")
+}
+
+model LeaveBalance {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  employeeId String   @map("employee_id")
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  leaveTypeId String    @map("leave_type_id")
+  leaveType   LeaveType @relation(fields: [leaveTypeId], references: [id], onDelete: Cascade)
+
+  year Int
+
+  /// Pro-rated for mid-year joiners (PRD glossary).
+  entitledDays  Decimal @default(0) @map("entitled_days") @db.Decimal(5, 2)
+  carriedOverDays Decimal @default(0) @map("carried_over_days") @db.Decimal(5, 2)
+  usedDays      Decimal @default(0) @map("used_days") @db.Decimal(5, 2)
+  /// Approved-but-not-yet-taken, plus anything awaiting approval. Held separately
+  /// so a second request cannot spend days the first already claimed.
+  pendingDays   Decimal @default(0) @map("pending_days") @db.Decimal(5, 2)
+
+  /// Manual HR adjustment. Reason is mandatory and audited (PRD §6.5).
+  adjustmentDays   Decimal @default(0) @map("adjustment_days") @db.Decimal(5, 2)
+  adjustmentReason String? @map("adjustment_reason")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([employeeId, leaveTypeId, year])
+  @@index([companyId, year])
+  @@map("leave_balances")
+}
+
+model LeaveRequest {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  employeeId String   @map("employee_id")
+  employee   Employee @relation("LeaveRequester", fields: [employeeId], references: [id], onDelete: Cascade)
+
+  leaveTypeId String    @map("leave_type_id")
+  leaveType   LeaveType @relation(fields: [leaveTypeId], references: [id], onDelete: Restrict)
+
+  startDate DateTime @map("start_date") @db.Date
+  endDate   DateTime @map("end_date") @db.Date
+
+  /// Working days only — weekends and the company's public holidays excluded
+  /// (PRD §6.5). Computed server-side; the client's figure is never trusted.
+  workingDays Decimal @map("working_days") @db.Decimal(5, 2)
+
+  reason      String
+  contactInfo String? @map("contact_info")
+  /// Who covers the work while they are away.
+  handoverToId String? @map("handover_to_id")
+
+  status LeaveStatus @default(PENDING_LINE_MANAGER)
+
+  /// Supporting document, e.g. a medical note.
+  documentUrl String? @map("document_url")
+
+  submittedAt DateTime  @default(now()) @map("submitted_at")
+  decidedAt   DateTime? @map("decided_at")
+
+  /// Set when the 72h rule bumps this past an unresponsive approver (PRD §6.5).
+  escalatedAt DateTime? @map("escalated_at")
+  /// Last reminder sent, so the 48h nudge fires once rather than every sweep.
+  lastReminderAt DateTime? @map("last_reminder_at")
+
+  cancelledAt     DateTime? @map("cancelled_at")
+  cancelReason    String?   @map("cancel_reason")
+
+  approvals LeaveApproval[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId, status])
+  @@index([employeeId, status])
+  @@index([companyId, startDate, endDate])
+  @@map("leave_requests")
+}
+
+/// One row per approval level, so the chain is auditable rather than a single
+/// mutable status field (PRD §2.1 — audit-ready at all times).
+model LeaveApproval {
+  id String @id @default(uuid())
+
+  leaveRequestId String       @map("leave_request_id")
+  leaveRequest   LeaveRequest @relation(fields: [leaveRequestId], references: [id], onDelete: Cascade)
+
+  level ApprovalLevel
+
+  approverId String?   @map("approver_id")
+  approver   Employee? @relation("LeaveApprover", fields: [approverId], references: [id], onDelete: SetNull)
+
+  decision ApprovalDecision @default(PENDING)
+  note     String?
+  decidedAt DateTime?       @map("decided_at")
+
+  createdAt DateTime @default(now())
+
+  @@unique([leaveRequestId, level])
+  @@index([approverId, decision])
+  @@map("leave_approvals")
+}
+
+// ─── Payslips (PRD §6.6) ────────────────────────────────────────────────────
+
+model Payslip {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  employeeId String   @map("employee_id")
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  periodYear  Int @map("period_year")
+  periodMonth Int @map("period_month")
+
+  /// Company-scoped object key. Never a public URL — access is always through a
+  /// short-lived signed URL (PRD §11.2).
+  storageKey   String @map("storage_key")
+  originalName String @map("original_name")
+  fileSize     Int    @map("file_size")
+  /// PDF only (PRD §6.6).
+  contentType  String @default("application/pdf") @map("content_type")
+  checksum     String?
+
+  uploadedById String   @map("uploaded_by_id")
+  uploadedAt   DateTime @default(now()) @map("uploaded_at")
+
+  /// Views and downloads are logged for HR visibility (PRD §6.6).
+  viewCount     Int       @default(0) @map("view_count")
+  downloadCount Int       @default(0) @map("download_count")
+  lastAccessedAt DateTime? @map("last_accessed_at")
+
+  createdAt DateTime @default(now())
+
+  /// One payslip per employee per month. A correction replaces rather than
+  /// duplicates, so nobody has to guess which of two is current.
+  @@unique([employeeId, periodYear, periodMonth])
+  @@index([companyId, periodYear, periodMonth])
+  @@map("payslips")
+}
+
+// ─── Documents & onboarding ─────────────────────────────────────────────────
+
+model EmployeeDocument {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  employeeId String   @map("employee_id")
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  category     String
+  title        String
+  storageKey   String @map("storage_key")
+  originalName String @map("original_name")
+  fileSize     Int    @map("file_size")
+  contentType  String @map("content_type")
+
+  expiresAt  DateTime? @map("expires_at")
+  uploadedById String  @map("uploaded_by_id")
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId, employeeId])
+  @@map("employee_documents")
+}
+
+/// Auto-generated per new hire, with assignable tasks and due dates (PRD §6.3).
+model OnboardingTask {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  employeeId String   @map("employee_id")
+  employee   Employee @relation("OnboardingSubject", fields: [employeeId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  category    String?
+  sequence    Int     @default(0)
+
+  assigneeId String?   @map("assignee_id")
+  assignee   Employee? @relation("OnboardingAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+
+  dueDate     DateTime? @map("due_date") @db.Date
+  completedAt DateTime? @map("completed_at")
+  completedById String? @map("completed_by_id")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId, employeeId])
+  @@index([assigneeId, completedAt])
+  @@map("onboarding_tasks")
+}
+
+// ─── Calendar ───────────────────────────────────────────────────────────────
+
+/// Pre-loaded and editable per company (PRD §6.2). Confirmed annually, since
+/// Nigerian holidays move with the lunar calendar (PRD §17 Q9).
+model PublicHoliday {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  name String
+  date DateTime @db.Date
+  year Int
+  /// Fixed-date holidays repeat; Eid and Easter must be set each year.
+  isRecurring Boolean @default(false) @map("is_recurring")
+
+  createdAt DateTime @default(now())
+
+  @@unique([companyId, date])
+  @@index([companyId, year])
+  @@map("public_holidays")
+}
+
+// ─── Notifications (PRD §8) ─────────────────────────────────────────────────
+
+model Notification {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  recipientId String   @map("recipient_id")
+  recipient   Employee @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  /// e.g. LEAVE_SUBMITTED, PAYSLIP_UPLOADED, MISSING_CLOCK_OUT.
+  eventType String  @map("event_type")
+  title     String
+  body      String
+  /// Deep link into the app, e.g. /leave/detail/<id>.
+  actionUrl String? @map("action_url")
+
+  channel NotificationChannel @default(IN_APP)
+  readAt  DateTime?           @map("read_at")
+  sentAt  DateTime?           @map("sent_at")
+  /// Set when an email bounces or the provider rejects it.
+  failedAt DateTime?          @map("failed_at")
+  failureReason String?       @map("failure_reason")
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId, recipientId, readAt])
+  @@index([eventType])
+  @@map("notifications")
+}
+
+// ─── Audit (PRD §2.1, §11.3) ────────────────────────────────────────────────
+
+/// Append-only. Every sensitive action lands here with actor and timestamp.
+///
+/// No company relation and no cascade on purpose: audit entries must survive the
+/// deletion of what they describe, and Group HR reads across companies (§7.2).
+/// Retention is 5 years (§11.3).
+model AuditLog {
+  id String @id @default(uuid())
+
+  companyId String? @map("company_id")
+
+  actorId    String? @map("actor_id")
+  actorEmail String? @map("actor_email")
+  actorRole  Role?   @map("actor_role")
+
+  /// e.g. EMPLOYEE_DEACTIVATED, LEAVE_APPROVED, PAYSLIP_DOWNLOADED.
+  action     String
+  entityType String  @map("entity_type")
+  entityId   String? @map("entity_id")
+
+  /// Mandatory justification where the PRD demands one.
+  reason String?
+
+  /// Before/after for field-level changes. Tier 1 values are redacted before
+  /// they are written — the audit log records that salary changed, never to what.
+  changes Json?
+
+  dataTier DataTier @default(TIER_3_OPERATIONAL) @map("data_tier")
+
+  ipAddress String? @map("ip_address")
+  userAgent String? @map("user_agent")
+  requestId String? @map("request_id")
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId, createdAt])
+  @@index([entityType, entityId])
+  @@index([actorId])
+  @@index([action])
+  @@map("audit_logs")
+}
+
+// ─── Feature flags (PRD §14) ────────────────────────────────────────────────
+
+/// Enables or disables a feature per company without a deployment, which is what
+/// makes a phased sister-company rollout possible.
+model FeatureFlag {
+  id        String  @id @default(uuid())
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  key         String
+  isEnabled   Boolean @default(false) @map("is_enabled")
+  description String?
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, key])
+  @@map("feature_flags")
+}
