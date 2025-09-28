@@ -1,0 +1,32 @@
+# Local development database.
+#
+# Two roles on purpose:
+#   nownowhr_owner — owns the schema, runs migrations
+#   nownowhr_app   — what the API connects as, NOT the owner and NOT superuser
+#
+# That split is what makes Row-Level Security real. Postgres exempts superusers
+# and table owners from RLS policies, so an API connecting as either would sail
+# straight past the tenant isolation in PRD §11.4 and nobody would notice until
+# one company could read another's payroll.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nownowhr-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nownowhr_owner
+      POSTGRES_PASSWORD: change-me
+      POSTGRES_DB: nownowhr
+    ports:
+      - '5432:5432'
+    volumes:
+      - nownowhr-pgdata:/var/lib/postgresql/data
+      - ./prisma/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nownowhr_owner -d nownowhr']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  nownowhr-pgdata:
