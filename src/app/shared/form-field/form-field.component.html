@@ -1,0 +1,4 @@
+<label class="mb-1 block text-sm font-medium text-neutral-700">{{ label }}</label>
+<ng-content />
+<p *ngIf="hint && !error" class="mt-1 text-xs text-neutral-500">{{ hint }}</p>
+<p *ngIf="error" class="mt-1 text-xs text-red-600">{{ error }}</p>

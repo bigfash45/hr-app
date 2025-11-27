@@ -1,0 +1,45 @@
+<div class="min-h-screen grid grid-cols-1 md:grid-cols-2">
+  <div class="hidden md:block relative md:h-screen">
+    <img src="/assets/images/login-image.png" alt="Team member at desk" class="block h-full w-full object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/60 via-emerald-700/45 to-transparent"></div>
+    <div class="absolute bottom-10 left-10 text-white">
+      <p class="text-3xl font-extrabold max-w-sm leading-snug">Tools to manage your team in one spot</p>
+      <div class="mt-6">
+        <ui-nownow-logo />
+      </div>
+    </div>
+  </div>
+
+  <div class="relative flex items-center justify-center py-10">
+    <div class="w-full max-w-sm">
+      <h1 class="text-2xl font-bold text-center">Log In your account</h1>
+      <p class="mt-1 text-center text-sm text-neutral-600">Already have an account? <a class="text-amber-500 hover:underline" href="#">Log in</a></p>
+
+      <form class="mt-8 space-y-4" [formGroup]="form" (ngSubmit)="submit()">
+        <ui-form-field label="Company Code">
+          <select formControlName="companyCode" class="w-full appearance-none rounded-md border border-amber-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+            <option value="001122">001122</option>
+            <option value="001123">001123</option>
+          </select>
+        </ui-form-field>
+
+        <ui-form-field label="User Name" [error]="form.controls.username.touched && form.controls.username.invalid ? 'Valid email required' : null">
+          <ui-input placeholder="olivia@untitledui.com" formControlName="username" />
+        </ui-form-field>
+
+        <ui-form-field label="Password" [error]="form.controls.password.touched && form.controls.password.invalid ? 'Minimum 6 characters' : null">
+          <ui-input type="password" formControlName="password" />
+        </ui-form-field>
+
+        <p *ngIf="error()" class="text-sm text-red-600">{{ error() }}</p>
+
+        <ui-button type="submit" [loading]="loading()" btnClass="w-full mt-3">
+          Log in
+        </ui-button>
+      </form>
+    </div>
+    <div class="pointer-events-none absolute -bottom-4 -right-6 hidden md:block opacity-90">
+      <ui-decor-shapes />
+    </div>
+  </div>
+</div>
