@@ -43,7 +43,7 @@ export class LoginPage {
       this.error.set(result.message || 'Login failed');
       return;
     }
-    // Navigate to a placeholder route after login success
-    this.router.navigateByUrl('/');
+    // Navigate to overview page after login success
+    this.router.navigateByUrl('/overview');
   }
 }
