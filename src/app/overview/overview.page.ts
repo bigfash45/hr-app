@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NowNowLogoComponent } from '../shared/nownow-logo/nownow-logo.component';
+import { RouterModule } from '@angular/router';
+import { TopNavComponent } from '../shared/top-nav/top-nav.component';
+import { SideNavComponent } from '../shared/side-nav/side-nav.component';
 
 @Component({
   selector: 'app-overview-page',
   standalone: true,
-  imports: [CommonModule, NowNowLogoComponent],
+  imports: [CommonModule, RouterModule, TopNavComponent, SideNavComponent],
   templateUrl: './overview.page.html',
 })
 export class OverviewPage {

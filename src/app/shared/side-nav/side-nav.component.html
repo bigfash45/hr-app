@@ -1,0 +1,63 @@
+<aside>
+  <nav class="space-y-1">
+    <a
+      class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
+      routerLink="/overview"
+      routerLinkActive="bg-orange-50 text-orange-600 font-medium"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <span
+        class="i-lucide-layout-dashboard text-[18px]"
+        [ngClass]="{ 'text-gray-400': !isActive('/overview') }"
+      ></span>
+      <span>Overview</span>
+    </a>
+    <a
+      class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
+      routerLink="/employees"
+      routerLinkActive="bg-orange-50 text-orange-600 font-medium"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <span
+        class="i-lucide-users text-[18px]"
+        [ngClass]="{
+          'text-orange-500': isActive('/employees'),
+          'text-gray-400': !isActive('/employees')
+        }"
+      ></span>
+      <span>Employees</span>
+    </a>
+    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
+      <span class="i-lucide-clipboard-list text-[18px] text-gray-400"></span>
+      <span>Attendance</span>
+    </a>
+    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
+      <span class="i-lucide-plane text-[18px] text-gray-400"></span>
+      <span>Leave Applications</span>
+    </a>
+    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
+      <span class="i-lucide-wallet-cards text-[18px] text-gray-400"></span>
+      <span>Payroll</span>
+    </a>
+    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
+      <span class="i-lucide-bar-chart-3 text-[18px] text-gray-400"></span>
+      <span>Reports</span>
+    </a>
+    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
+      <span class="i-lucide-building-2 text-[18px] text-gray-400"></span>
+      <span>Organization</span>
+    </a>
+    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
+      <span class="i-lucide-settings-2 text-[18px] text-gray-400"></span>
+      <span>Setting</span>
+    </a>
+  </nav>
+
+  <div class="mt-6">
+    <button class="w-full rounded-lg bg-black text-white py-3 font-medium">Request Leave</button>
+  </div>
+
+  <div class="mt-6">
+    <button class="w-full rounded-lg border py-3">Logout</button>
+  </div>
+</aside>

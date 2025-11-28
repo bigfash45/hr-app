@@ -1,0 +1,154 @@
+<div class="min-h-screen bg-[#F7F7F8]">
+  <!-- Top bar -->
+  <app-top-nav></app-top-nav>
+
+  <!-- Main -->
+  <div class="mx-auto max-w-7xl px-6 py-8 grid grid-cols-12 gap-6">
+    <!-- Sidebar -->
+    <app-side-nav class="col-span-3 xl:col-span-2"></app-side-nav>
+
+    <!-- Content -->
+    <section class="col-span-9 xl:col-span-10">
+      <!-- Breadcrumb -->
+      <div class="text-xs text-gray-500 mb-4">
+        Dashboard
+        <span class="mx-1">&gt;</span>
+        Employees
+        <span class="mx-1">&gt;</span>
+        <span class="text-gray-900 font-medium">Add New Employees</span>
+      </div>
+
+      <h1 class="text-2xl font-semibold mb-6">Add New Employee</h1>
+
+      <div class="grid grid-cols-12 gap-8">
+        <!-- Left stepper -->
+        <div class="col-span-3 lg:col-span-3">
+          <ol class="space-y-6 relative">
+            <div class="absolute left-4 top-6 bottom-0 w-px bg-gray-200"></div>
+            <li class="relative flex gap-3 items-start">
+              <div class="relative z-10 h-8 w-8 rounded-full bg-black text-white text-sm grid place-items-center">1</div>
+              <div>
+                <div class="text-sm font-semibold">Personal Details</div>
+                <div class="text-xs text-gray-500">Core personal information</div>
+              </div>
+            </li>
+            <li class="relative flex gap-3 items-start text-gray-400">
+              <div class="relative z-10 h-8 w-8 rounded-full border border-gray-300 bg-white text-sm grid place-items-center">2</div>
+              <div>
+                <div class="text-sm font-medium">Employment Details</div>
+                <div class="text-xs">Role and position information</div>
+              </div>
+            </li>
+            <li class="relative flex gap-3 items-start text-gray-400">
+              <div class="relative z-10 h-8 w-8 rounded-full border border-gray-300 bg-white text-sm grid place-items-center">3</div>
+              <div>
+                <div class="text-sm font-medium">Compensation &amp; Benefits</div>
+                <div class="text-xs">Payroll &amp; benefits</div>
+              </div>
+            </li>
+            <li class="relative flex gap-3 items-start text-gray-400">
+              <div class="relative z-10 h-8 w-8 rounded-full border border-gray-300 bg-white text-sm grid place-items-center">4</div>
+              <div>
+                <div class="text-sm font-medium">Onboarding Checklist</div>
+                <div class="text-xs">Tasks for new hire setup</div>
+              </div>
+            </li>
+            <li class="relative flex gap-3 items-start text-gray-400">
+              <div class="relative z-10 h-8 w-8 rounded-full border border-gray-300 bg-white text-sm grid place-items-center">5</div>
+              <div>
+                <div class="text-sm font-medium">Document Upload</div>
+                <div class="text-xs">Required new hire documents</div>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Right card -->
+        <div class="col-span-9 lg:col-span-9">
+          <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 flex flex-col gap-6">
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-semibold">Personal Details</h2>
+            </div>
+
+            <div class="grid grid-cols-12 gap-6 items-start">
+              <!-- Avatar -->
+              <div class="col-span-12 md:col-span-3 flex flex-col items-center gap-3">
+                <div class="relative">
+                  <img class="h-28 w-28 rounded-full object-cover" src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=160" alt="employee" />
+                  <button class="absolute bottom-1 right-1 h-8 w-8 rounded-full bg-orange-500 text-white grid place-items-center text-xs">
+                    <span class="i-lucide-pencil"></span>
+                  </button>
+                </div>
+                <button class="text-xs text-orange-600">Change Photo</button>
+              </div>
+
+              <!-- Form fields -->
+              <div class="col-span-12 md:col-span-9 grid grid-cols-12 gap-4">
+                <div class="col-span-12 md:col-span-4">
+                  <label class="block text-xs text-gray-500 mb-1">First Name</label>
+                  <input class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value="Charlene" />
+                </div>
+                <div class="col-span-12 md:col-span-4">
+                  <label class="block text-xs text-gray-500 mb-1">Last Name</label>
+                  <input class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value="Reed" />
+                </div>
+                <div class="col-span-12 md:col-span-4">
+                  <label class="block text-xs text-gray-500 mb-1">Middle Name</label>
+                  <input class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value="Charlene Reed" />
+                </div>
+
+                <div class="col-span-12 md:col-span-4">
+                  <label class="block text-xs text-gray-500 mb-1">Employee ID</label>
+                  <input class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" />
+                </div>
+                <div class="col-span-12 md:col-span-4">
+                  <label class="block text-xs text-gray-500 mb-1">Employment Type</label>
+                  <input class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" />
+                </div>
+                <div class="col-span-12 md:col-span-4">
+                  <label class="block text-xs text-gray-500 mb-1">Date of Birth</label>
+                  <div class="relative">
+                    <input class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm pr-10" placeholder="dd/mm/yyyy" />
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 i-lucide-calendar text-gray-400 text-[18px]"></span>
+                  </div>
+                </div>
+
+                <div class="col-span-12 md:col-span-4">
+                  <label class="block text-xs text-gray-500 mb-1">Joining Date</label>
+                  <div class="relative">
+                    <input class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm pr-10" placeholder="dd/mm/yyyy" />
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 i-lucide-calendar text-gray-400 text-[18px]"></span>
+                  </div>
+                </div>
+                <div class="col-span-12 md:col-span-4">
+                  <label class="block text-xs text-gray-500 mb-1">Nationality</label>
+                  <div class="relative">
+                    <input class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm pr-8" />
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 i-lucide-chevron-down text-gray-400 text-[18px]"></span>
+                  </div>
+                </div>
+                <div class="col-span-12 md:col-span-4">
+                  <label class="block text-xs text-gray-500 mb-1">Marital Status</label>
+                  <div class="relative">
+                    <input class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm pr-8" />
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 i-lucide-chevron-down text-gray-400 text-[18px]"></span>
+                  </div>
+                </div>
+
+                <div class="col-span-12 md:col-span-4">
+                  <label class="block text-xs text-gray-500 mb-1">Phone Number</label>
+                  <input class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" />
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2 border-t border-gray-100 mt-2">
+              <button class="px-5 py-2 rounded-lg border text-sm text-gray-500 bg-gray-50">Previous</button>
+              <button class="px-5 py-2 rounded-lg bg-black text-white text-sm font-medium">Next Step</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
