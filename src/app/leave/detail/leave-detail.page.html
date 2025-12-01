@@ -1,0 +1,106 @@
+  <div class="min-h-screen bg-[#F7F7F8] grid grid-cols-12">
+  <!-- Sidebar -->
+  <app-side-nav class="col-span-3 xl:col-span-2"></app-side-nav>
+
+  <!-- Right side: Top bar + Content -->
+  <div class="col-span-9 xl:col-span-10">
+    <!-- Top bar -->
+    <app-top-nav></app-top-nav>
+
+    <!-- Content -->
+    <section class="px-[25px] py-6 grid grid-cols-12 gap-6">
+      <!-- Main content -->
+      <div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
+        <!-- Employee card -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 flex items-center gap-4">
+          <img [src]="detail?.employee?.avatar" class="h-14 w-14 rounded-full object-cover" />
+          <div class="flex-1">
+            <h2 class="text-lg font-semibold text-gray-900">{{ detail?.employee?.name }}</h2>
+            <p class="text-sm text-gray-500">{{ detail?.employee?.role }}</p>
+          </div>
+        </div>
+
+        <!-- Request summary -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <h3 class="text-base font-semibold text-gray-900 mb-4">Request Summary</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <p class="text-xs text-gray-500">Leave Type</p>
+              <p class="text-sm text-gray-900">{{ detail?.summary?.leaveType }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Date Requested</p>
+              <p class="text-sm text-gray-900">{{ detail?.summary?.dateRequested }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Date Submitted</p>
+              <p class="text-sm text-gray-900">{{ detail?.summary?.dateSubmitted }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Status</p>
+              <span class="inline-block mt-1 px-3 py-1 rounded-full text-xs font-medium" [ngClass]="getStatusClass(detail?.summary?.status ?? '')">
+                {{ detail?.summary?.status }}
+              </span>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Line Manager</p>
+              <p class="text-sm text-gray-900">{{ detail?.summary?.lineManager ?? '' }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Reason</p>
+              <p class="text-sm text-gray-600 italic">{{ detail?.summary?.reason ?? '' }}</p>
+            </div>
+          </div>
+
+          <div class="mt-6 flex items-center gap-3">
+            <button class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm hover:bg-gray-50">Reject</button>
+            <button class="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm hover:bg-black">Approve</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right sidebar -->
+      <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+        <!-- Approval history -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <h3 class="text-base font-semibold text-gray-900 mb-4">Approval History</h3>
+          <div class="flex items-start gap-3">
+            <span class="i-lucide-more-horizontal text-[18px] text-gray-400"></span>
+            <div>
+              <p class="text-sm text-gray-900">Pending Manager Approved</p>
+              <p class="text-xs text-gray-500">Awaiting approval by line manager</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 mt-4">
+            <span class="i-lucide-more-horizontal text-[18px] text-gray-400"></span>
+            <div>
+              <p class="text-sm text-gray-900">Pending HR Approval</p>
+              <p class="text-xs text-gray-500">Awaiting final review by HR department</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Updated balance -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <h3 class="text-base font-semibold text-gray-900 mb-4">Updated Leave Balance</h3>
+          <div class="space-y-4">
+            <ng-container *ngFor="let b of detail?.balances | slice:0:1">
+              <div class="rounded-xl bg-green-50 p-4">
+                <p class="text-xs text-green-700">{{ b.type }}</p>
+                <p class="text-2xl font-semibold text-green-700">{{ b.days }}<span class="text-base font-medium ml-1">days</span></p>
+                <p class="text-xs text-gray-500">-3 days for this request</p>
+              </div>
+            </ng-container>
+            <ng-container *ngFor="let b of detail?.balances | slice:1:2">
+              <div class="rounded-xl bg-gray-50 p-4">
+                <p class="text-xs text-gray-700">{{ b.type }}</p>
+                <p class="text-2xl font-semibold text-gray-900">{{ b.days }}<span class="text-base font-medium ml-1">days</span></p>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+

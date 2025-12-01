@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 export interface LeaveRequest {
   id: number;
@@ -15,11 +16,15 @@ export interface LeaveRequest {
 @Component({
   selector: 'app-leave-requests',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './leave-requests.component.html',
 })
 export class LeaveRequestsComponent {
   @Input() leaveRequests: LeaveRequest[] = [];
+  // Reuse controls
+  @Input() title: string = 'Manage Leave Request';
+  @Input() showNameColumn: boolean = true;
+  @Input() showManageActions: boolean = true; // if false, show only "View Details"
 
   currentPage = 1;
   totalPages = 5;

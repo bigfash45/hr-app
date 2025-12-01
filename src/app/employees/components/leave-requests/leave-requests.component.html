@@ -1,7 +1,7 @@
 <div class="bg-white rounded-2xl border border-gray-200 p-6">
   <!-- Table Header -->
   <div class="flex items-center justify-between mb-6">
-    <h2 class="text-lg font-semibold text-gray-900">Manage Leave Request</h2>
+    <h2 class="text-lg font-semibold text-gray-900">{{ title }}</h2>
     <div class="flex items-center gap-4">
       <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-600 hover:bg-gray-50">
         <span class="i-lucide-sliders-horizontal text-[16px] text-gray-500"></span>
@@ -20,7 +20,7 @@
     <table class="w-full text-sm">
       <thead>
         <tr class="text-left text-gray-500 border-b border-gray-100">
-          <th class="pb-4 font-normal">Employee Name</th>
+          <th class="pb-4 font-normal" *ngIf="showNameColumn">Employee Name</th>
           <th class="pb-4 font-normal">Leave Type</th>
           <th class="pb-4 font-normal">Leave From</th>
           <th class="pb-4 font-normal">Leave To</th>
@@ -31,7 +31,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let request of leaveRequests" class="border-b border-gray-50">
-          <td class="py-4">
+          <td class="py-4" *ngIf="showNameColumn">
             <div class="flex items-center gap-3">
               <img [src]="request.avatar" class="h-9 w-9 rounded-full object-cover" />
               <span class="text-gray-900">{{ request.name }}</span>
@@ -48,12 +48,12 @@
           </td>
           <td class="py-4">
             <div class="flex items-center gap-2">
-              <ng-container *ngIf="request.status === 'PENDING MANAGER' || request.status === 'PENDING HR'">
+              <ng-container *ngIf="showManageActions && (request.status === 'PENDING MANAGER' || request.status === 'PENDING HR')">
                 <button class="px-4 py-1.5 rounded-lg border border-green-500 text-green-600 text-xs font-medium hover:bg-green-50">Approve</button>
                 <button class="px-4 py-1.5 rounded-lg border border-red-500 text-red-500 text-xs font-medium hover:bg-red-50">Reject</button>
               </ng-container>
-              <ng-container *ngIf="request.status === 'APPROVED'">
-                <button class="px-4 py-1.5 rounded-lg border border-gray-200 text-gray-600 text-xs font-medium hover:bg-gray-50">View Details</button>
+              <ng-container *ngIf="!showManageActions || request.status === 'APPROVED'">
+                <a [routerLink]="['/leave/detail', request.id]" class="px-4 py-1.5 rounded-lg border border-gray-200 text-gray-600 text-xs font-medium hover:bg-gray-50">View Details</a>
               </ng-container>
             </div>
           </td>

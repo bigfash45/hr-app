@@ -51,15 +51,15 @@
     </a>
     <a
       class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-      routerLink="/leave"
+      routerLink="/leave/history"
       routerLinkActive="bg-orange-400 !text-gray-900 font-medium"
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <span
         class="i-lucide-plane text-[18px]"
         [ngClass]="{
-          'text-orange-500': isActive('/leave'),
-          'text-gray-400': !isActive('/leave')
+          'text-orange-500': isActive('/leave/history'),
+          'text-gray-400': !isActive('/leave/history')
         }"
       ></span>
       <span>Leave Applications</span>

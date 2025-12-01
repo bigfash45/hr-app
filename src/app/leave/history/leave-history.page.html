@@ -1,0 +1,25 @@
+<div class="min-h-screen bg-[#F7F7F8] grid grid-cols-12">
+  <!-- Sidebar -->
+  <app-side-nav class="col-span-3 xl:col-span-2"></app-side-nav>
+
+  <!-- Right side: Top bar + Content -->
+  <div class="col-span-9 xl:col-span-10">
+    <!-- Top bar -->
+    <app-top-nav></app-top-nav>
+
+    <!-- Content -->
+    <section class="px-[25px] py-6">
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">My Leave History</h1>
+        <p class="text-sm text-gray-500 mt-1">View and manage your past and pending leave requests</p>
+      </div>
+
+      <app-leave-requests
+        [leaveRequests]="leaveHistory"
+        [title]="'Request Summary'"
+        [showNameColumn]="false"
+        [showManageActions]="false">
+      </app-leave-requests>
+    </section>
+  </div>
+</div>
