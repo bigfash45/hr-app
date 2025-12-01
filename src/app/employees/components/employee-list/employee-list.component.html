@@ -1,0 +1,70 @@
+<div class="bg-white rounded-2xl border border-gray-200 p-6">
+  <!-- Table Header -->
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-lg font-semibold text-gray-900">Manage Employees</h2>
+    <div class="flex items-center gap-4">
+      <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-600 hover:bg-gray-50">
+        <span class="i-lucide-sliders-horizontal text-[16px] text-gray-500"></span>
+        Filter by
+        <span class="i-lucide-chevron-down text-[14px] text-gray-400"></span>
+      </button>
+      <div class="relative">
+        <span class="i-lucide-search text-[16px] text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"></span>
+        <input class="rounded-xl border border-gray-200 bg-white pl-11 pr-4 py-2.5 text-sm w-[220px] placeholder:text-gray-400 focus:outline-none focus:border-gray-300" placeholder="Search here" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left text-gray-500 border-b border-gray-100">
+          <th class="pb-4 font-normal">Employee Name</th>
+          <th class="pb-4 font-normal">Contact Type</th>
+          <th class="pb-4 font-normal">Role</th>
+          <th class="pb-4 font-normal">Department</th>
+          <th class="pb-4 font-normal">Attendance</th>
+          <th class="pb-4 font-normal"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let emp of employees" class="border-b border-gray-50">
+          <td class="py-4">
+            <div class="flex items-center gap-3">
+              <img [src]="emp.avatar" class="h-9 w-9 rounded-full object-cover" />
+              <span class="text-gray-900">{{ emp.name }}</span>
+            </div>
+          </td>
+          <td class="py-4 text-gray-600">{{ emp.contactType }}</td>
+          <td class="py-4 text-gray-600">{{ emp.role }}</td>
+          <td class="py-4 text-gray-600">{{ emp.department }}</td>
+          <td class="py-4 text-gray-900 font-medium">{{ emp.attendance }}</td>
+          <td class="py-4">
+            <div class="flex items-center gap-2">
+              <button (click)="onViewDetails(emp)" class="px-4 py-1.5 rounded-lg border border-gray-200 text-gray-600 text-xs font-medium hover:bg-gray-50">See Details</button>
+              <button class="h-8 w-8 rounded-lg text-orange-400 hover:bg-orange-50 grid place-items-center">
+                <span class="i-lucide-more-vertical text-[16px]"></span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex items-center justify-end gap-2 mt-6">
+    <button (click)="goToPage(currentPage - 1)" class="h-8 w-8 rounded-lg border border-gray-200 text-gray-400 grid place-items-center hover:bg-gray-50" [disabled]="currentPage === 1">
+      <span class="i-lucide-chevron-left text-[14px]"></span>
+    </button>
+    <button *ngFor="let page of [1,2,3,4,5]" (click)="goToPage(page)"
+            class="h-8 w-8 rounded-lg text-sm font-medium grid place-items-center"
+            [ngClass]="currentPage === page ? 'bg-black text-white' : 'border border-gray-200 text-gray-600 hover:bg-gray-50'">
+      {{ page }}
+    </button>
+    <button (click)="goToPage(currentPage + 1)" class="h-8 w-8 rounded-lg border border-gray-200 text-gray-400 grid place-items-center hover:bg-gray-50" [disabled]="currentPage === totalPages">
+      <span class="i-lucide-chevron-right text-[14px]"></span>
+    </button>
+  </div>
+</div>

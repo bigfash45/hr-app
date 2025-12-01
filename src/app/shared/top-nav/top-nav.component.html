@@ -1,22 +1,24 @@
-<header class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-gray-100">
-  <div class="mx-auto max-w-7xl px-6 py-4 flex items-center gap-4">
-    <ui-nownow-logo variant="black" class="shrink-0"></ui-nownow-logo>
-    <div class="flex-1 flex justify-center">
+<header class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-l border-gray-100">
+  <div class="px-[25px] py-[30px] flex items-center gap-4 justify-between">
+    <div class="flex-1 flex justify-start">
       <div class="relative max-w-3xl w-full">
-        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 i-lucide-search"></span>
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 i-lucide-search text-[16px]"></span>
         <input
-          class="w-full rounded-full border border-gray-200 bg-[#F7F7F8] pl-11 pr-5 py-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-100"
+          class="w-full rounded-full border border-gray-200 bg-[#F7F7F8] pl-10 pr-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-100"
           placeholder="Search employees, departments"
         />
       </div>
     </div>
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-3">
       <button class="relative p-2 rounded-full hover:bg-gray-100">
-        <span class="i-lucide-bell"></span>
+        <span class="i-lucide-bell text-[18px]"></span>
         <span
-          class="absolute -top-1 -right-1 h-5 w-5 text-[11px] grid place-items-center rounded-full bg-red-500 text-white"
+          class="absolute -top-1 -right-1 h-5 w-5 text-[10px] grid place-items-center rounded-full bg-red-500 text-white font-semibold"
           >13</span
         >
+      </button>
+      <button class="p-2 rounded-full hover:bg-gray-100">
+        <span class="i-lucide-moon text-[18px]"></span>
       </button>
       <div class="flex items-center gap-2">
         <img
@@ -24,9 +26,8 @@
           src="https://i.pravatar.cc/60?img=2"
           alt="avatar"
         />
-        <div class="text-sm">
-          <div class="font-medium">Tolu Folusho</div>
-        </div>
+        <div class="text-sm font-medium">Tolu Folusho</div>
+        <span class="i-lucide-chevron-down text-[16px] text-gray-500"></span>
       </div>
     </div>
   </div>

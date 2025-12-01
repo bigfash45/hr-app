@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { NowNowLogoComponent } from '../nownow-logo/nownow-logo.component';
 
 @Component({
   selector: 'app-side-nav',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NowNowLogoComponent],
   templateUrl: './side-nav.component.html',
 })
 export class SideNavComponent {

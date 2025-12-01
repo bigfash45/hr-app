@@ -13,6 +13,14 @@ export const routes: Routes = [
     path: 'employees',
     loadComponent: () => import('./employees/employees.page').then(m => m.EmployeesPage),
   },
+  {
+    path: 'attendance',
+    loadComponent: () => import('./attendance/attendance.page').then(m => m.AttendancePage),
+  },
+  {
+    path: 'leave',
+    loadComponent: () => import('./leave/leave.page').then(m => m.LeavePage),
+  },
   { path: '', pathMatch: 'full', redirectTo: 'auth/login' },
   { path: '**', redirectTo: 'auth/login' },
 ];

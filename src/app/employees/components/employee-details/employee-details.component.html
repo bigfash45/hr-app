@@ -1,0 +1,149 @@
+<div *ngIf="employee">
+  <!-- Breadcrumb -->
+  <div class="text-xs text-gray-500 mb-6">
+    <a href="javascript:void(0)" (click)="goBack()" class="hover:text-gray-700">Dashboard</a>
+    <span class="mx-2">&gt;</span>
+    <a href="javascript:void(0)" (click)="goBack()" class="hover:text-gray-700">Employees</a>
+    <span class="mx-2">&gt;</span>
+    <span class="text-gray-900 font-medium">{{ employee.name }}</span>
+  </div>
+
+  <!-- Profile Header Card -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-5">
+        <div class="relative">
+          <img [src]="employee.avatar" class="h-24 w-24 rounded-full object-cover border-4 border-gray-50" />
+          <button class="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-orange-400 text-white grid place-items-center border-2 border-white">
+            <span class="i-lucide-pencil text-[14px]"></span>
+          </button>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">{{ employee.name }}</h1>
+          <p class="text-gray-500 mt-1">{{ employee.role }}, {{ employee.department }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="px-5 py-2.5 rounded-xl bg-black text-white text-sm font-medium hover:bg-gray-900">
+          Edit Profile
+        </button>
+        <button class="h-10 w-10 rounded-xl border border-gray-200 text-orange-400 grid place-items-center hover:bg-gray-50">
+          <span class="i-lucide-more-vertical text-[18px]"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex items-center gap-8 border-b border-gray-200 mb-6">
+    <button (click)="setActiveTab('overview')" class="pb-4 text-sm font-medium border-b-2 -mb-px transition-colors"
+            [ngClass]="activeTab === 'overview' ? 'text-orange-500 border-orange-500' : 'text-gray-500 border-transparent hover:text-gray-700'">
+      Overview
+    </button>
+    <button (click)="setActiveTab('leave')" class="pb-4 text-sm font-medium border-b-2 -mb-px transition-colors"
+            [ngClass]="activeTab === 'leave' ? 'text-orange-500 border-orange-500' : 'text-gray-500 border-transparent hover:text-gray-700'">
+      Leave
+    </button>
+    <button (click)="setActiveTab('documents')" class="pb-4 text-sm font-medium border-b-2 -mb-px transition-colors"
+            [ngClass]="activeTab === 'documents' ? 'text-orange-500 border-orange-500' : 'text-gray-500 border-transparent hover:text-gray-700'">
+      Documents
+    </button>
+    <button (click)="setActiveTab('performance')" class="pb-4 text-sm font-medium border-b-2 -mb-px transition-colors"
+            [ngClass]="activeTab === 'performance' ? 'text-orange-500 border-orange-500' : 'text-gray-500 border-transparent hover:text-gray-700'">
+      Performance
+    </button>
+  </div>
+
+  <!-- Overview Tab Content -->
+  <div *ngIf="activeTab === 'overview'" class="grid grid-cols-12 gap-6">
+    <!-- Left Column -->
+    <div class="col-span-7 space-y-6">
+      <!-- Personal Details Card -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Personal Details</h3>
+        <div class="grid grid-cols-2 gap-y-6">
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Employee ID</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.employeeId || '#D234' }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Date of Birth</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.dateOfBirth || 'October 24, 1992' }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Gender</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.gender || 'Female' }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Nationality</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.nationality || 'Nigerian' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Information Card -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Job Information</h3>
+        <div class="grid grid-cols-2 gap-y-6">
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Employee Type</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.employeeType || 'Full-Time' }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Hire Date</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.hireDate || 'October 24, 1992' }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Reporting Manager</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.reportingManager || 'Emmanuel Aforinwo' }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Organisation</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.organisation || 'Now Now Digitals' }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-span-5">
+      <!-- Contact Information Card -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Contact Information</h3>
+        <div class="space-y-5">
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Work Email</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.workEmail || 'charlene.reed@email.com' }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Personal Email</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.personalEmail || 'charlenereed@myemail.com' }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Phone Number</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.phoneNumber || '+234 905 839 9274' }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Address</div>
+            <div class="text-base font-medium text-gray-900">{{ employee.address || '54, Olawale Street, Lagos' }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leave Tab Content -->
+  <div *ngIf="activeTab === 'leave'" class="bg-white rounded-2xl border border-gray-200 p-6">
+    <p class="text-gray-500 text-center py-12">Leave history coming soon...</p>
+  </div>
+
+  <!-- Documents Tab Content -->
+  <div *ngIf="activeTab === 'documents'" class="bg-white rounded-2xl border border-gray-200 p-6">
+    <p class="text-gray-500 text-center py-12">Documents coming soon...</p>
+  </div>
+
+  <!-- Performance Tab Content -->
+  <div *ngIf="activeTab === 'performance'" class="bg-white rounded-2xl border border-gray-200 p-6">
+    <p class="text-gray-500 text-center py-12">Performance data coming soon...</p>
+  </div>
+</div>

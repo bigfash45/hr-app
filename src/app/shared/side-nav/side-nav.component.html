@@ -1,9 +1,13 @@
-<aside>
+<aside class="bg-white shadow-sm border-r border-gray-100 px-5 py-6 sticky top-0 self-start min-h-screen flex flex-col">
+  <div class="mb-8">
+    <ui-nownow-logo variant="black" class="block"></ui-nownow-logo>
+  </div>
+  
   <nav class="space-y-1">
     <a
-      class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
+      class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
       routerLink="/overview"
-      routerLinkActive="bg-orange-50 text-orange-600 font-medium"
+      routerLinkActive="bg-orange-400 !text-gray-900 font-medium"
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <span
@@ -13,51 +17,79 @@
       <span>Overview</span>
     </a>
     <a
-      class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
+      class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors justify-between"
       routerLink="/employees"
-      routerLinkActive="bg-orange-50 text-orange-600 font-medium"
+      routerLinkActive="bg-orange-400 !text-gray-900 font-medium"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <div class="flex items-center gap-2">
+        <span
+          class="i-lucide-users text-[18px]"
+          [ngClass]="{
+            'text-orange-500': isActive('/employees'),
+            'text-gray-400': !isActive('/employees')
+          }"
+        ></span>
+        <span>Employees</span>
+      </div>
+      <span class="i-lucide-chevron-down text-[14px] text-gray-400"></span>
+    </a>
+    <a
+      class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+      routerLink="/attendance"
+      routerLinkActive="bg-orange-400 !text-gray-900 font-medium"
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <span
-        class="i-lucide-users text-[18px]"
+        class="i-lucide-clipboard-list text-[18px]"
         [ngClass]="{
-          'text-orange-500': isActive('/employees'),
-          'text-gray-400': !isActive('/employees')
+          'text-orange-500': isActive('/attendance'),
+          'text-gray-400': !isActive('/attendance')
         }"
       ></span>
-      <span>Employees</span>
-    </a>
-    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
-      <span class="i-lucide-clipboard-list text-[18px] text-gray-400"></span>
       <span>Attendance</span>
     </a>
-    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
-      <span class="i-lucide-plane text-[18px] text-gray-400"></span>
+    <a
+      class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+      routerLink="/leave"
+      routerLinkActive="bg-orange-400 !text-gray-900 font-medium"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <span
+        class="i-lucide-plane text-[18px]"
+        [ngClass]="{
+          'text-orange-500': isActive('/leave'),
+          'text-gray-400': !isActive('/leave')
+        }"
+      ></span>
       <span>Leave Applications</span>
     </a>
-    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
+    <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors" href="javascript:void(0)">
       <span class="i-lucide-wallet-cards text-[18px] text-gray-400"></span>
       <span>Payroll</span>
     </a>
-    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
+    <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors" href="javascript:void(0)">
       <span class="i-lucide-bar-chart-3 text-[18px] text-gray-400"></span>
       <span>Reports</span>
     </a>
-    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
+    <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors" href="javascript:void(0)">
       <span class="i-lucide-building-2 text-[18px] text-gray-400"></span>
       <span>Organization</span>
     </a>
-    <a class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100" href="javascript:void(0)">
+    <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors" href="javascript:void(0)">
       <span class="i-lucide-settings-2 text-[18px] text-gray-400"></span>
       <span>Setting</span>
     </a>
   </nav>
 
-  <div class="mt-6">
-    <button class="w-full rounded-lg bg-black text-white py-3 font-medium">Request Leave</button>
+  <div class="mt-auto pt-8">
+    <button class="w-full rounded-lg bg-black text-white py-2.5 font-medium text-sm">Request Leave</button>
   </div>
 
-  <div class="mt-6">
-    <button class="w-full rounded-lg border py-3">Logout</button>
+  <div class="mt-4">
+    <button class="w-full rounded-lg border py-2.5 text-sm flex items-center justify-center gap-2">
+      <span class="i-lucide-log-out text-[16px]"></span>
+      <span>Logout</span>
+    </button>
   </div>
 </aside>

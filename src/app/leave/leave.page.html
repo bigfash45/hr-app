@@ -1,0 +1,247 @@
+<div class="min-h-screen bg-[#F7F7F8] grid grid-cols-12">
+  <!-- Sidebar -->
+  <app-side-nav class="col-span-3 xl:col-span-2"></app-side-nav>
+
+  <!-- Right side: Top bar + Content -->
+  <div class="col-span-9 xl:col-span-10">
+    <!-- Top bar -->
+    <app-top-nav></app-top-nav>
+
+    <!-- Content -->
+    <section class="px-[25px] py-6">
+
+      <!-- ==================== SUBMITTED VIEW ==================== -->
+      <div *ngIf="currentView === 'submitted'" class="max-w-4xl mx-auto">
+        <!-- Success Banner -->
+        <div *ngIf="showSuccessBanner" class="mb-6 bg-green-50 border border-green-200 rounded-2xl px-6 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="h-8 w-8 rounded-full bg-white border border-green-200 grid place-items-center">
+              <span class="i-lucide-check text-[16px] text-green-600"></span>
+            </div>
+            <div>
+              <div class="text-green-700 font-semibold">Leave Request Completed</div>
+              <div class="text-green-600 text-sm">Your request has been submitted and is pending approval</div>
+            </div>
+          </div>
+          <button (click)="dismissBanner()" class="px-4 py-2 rounded-full border border-gray-200 bg-white text-sm text-gray-600 hover:bg-gray-50">
+            Got it
+          </button>
+        </div>
+
+        <!-- Success Icon & Title -->
+        <div class="text-center mb-8">
+          <div class="h-16 w-16 rounded-full bg-orange-100 border-4 border-orange-200 grid place-items-center mx-auto mb-4">
+            <span class="i-lucide-check text-[28px] text-orange-500"></span>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-900 mb-2">Leave Request Submitted</h1>
+          <p class="text-gray-500">Your request is now pending approval You will be notified of any updates</p>
+        </div>
+
+        <!-- Cards -->
+        <div class="grid grid-cols-12 gap-6 mb-8">
+          <!-- Request Summary -->
+          <div class="col-span-7 bg-white rounded-2xl border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Request Summary</h3>
+            
+            <div class="grid grid-cols-2 gap-6 mb-6">
+              <div>
+                <div class="text-sm text-gray-400 mb-1">Leave Type</div>
+                <div class="text-gray-900 font-medium">{{ submittedRequest?.leaveType }}</div>
+              </div>
+              <div>
+                <div class="text-sm text-gray-400 mb-1">Date Requested</div>
+                <div class="text-gray-900 font-medium">{{ formatSubmittedDates() }}</div>
+              </div>
+            </div>
+
+            <div>
+              <div class="text-sm text-gray-400 mb-1">Reason</div>
+              <div class="text-gray-600">{{ submittedRequest?.reason }}</div>
+            </div>
+          </div>
+
+          <!-- Updated Leave Balance -->
+          <div class="col-span-5 bg-white rounded-2xl border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Updated Leave Balance</h3>
+            
+            <div class="space-y-4">
+              <!-- Sick Leave (highlighted if used) -->
+              <div class="rounded-xl p-4" [ngClass]="submittedRequest?.leaveType === 'Sick Leave' ? 'bg-green-50' : 'bg-gray-50'">
+                <div class="text-sm mb-1" [ngClass]="submittedRequest?.leaveType === 'Sick Leave' ? 'text-green-600' : 'text-gray-500'">Sick Leave Days</div>
+                <div class="text-2xl font-bold" [ngClass]="submittedRequest?.leaveType === 'Sick Leave' ? 'text-green-600' : 'text-gray-900'">
+                  {{ getUpdatedBalance('Sick Leave') }}<span class="text-base font-normal text-gray-400">/15 days</span>
+                </div>
+                <div *ngIf="submittedRequest?.leaveType === 'Sick Leave'" class="text-sm text-green-600 mt-1">
+                  -{{ submittedRequest?.days }} days for this request
+                </div>
+              </div>
+
+              <!-- Annual Leave -->
+              <div class="rounded-xl p-4 bg-gray-50">
+                <div class="text-sm text-gray-500 mb-1">Annual Leave Days</div>
+                <div class="text-2xl font-bold text-gray-900">
+                  {{ getUpdatedBalance('Annual Leave') }}<span class="text-base font-normal text-gray-400">/15 days</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-center gap-4">
+          <button (click)="editRequest()" class="px-6 py-3 rounded-xl bg-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-300 transition-colors">
+            Edit Request
+          </button>
+          <button class="px-6 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors">
+            View Leave History
+          </button>
+          <button (click)="goToCalendar()" class="px-6 py-3 rounded-xl bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-colors">
+            Go To Leave Calendar
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== CALENDAR VIEW ==================== -->
+      <div *ngIf="currentView === 'calendar'">
+        <!-- Header -->
+        <div class="mb-6">
+          <h1 class="text-2xl font-bold text-gray-900">Leave Calendar</h1>
+          <p class="text-sm text-gray-500 mt-1">Select date on the calendar to request leave</p>
+        </div>
+
+        <!-- Main Content -->
+      <div class="grid grid-cols-12 gap-6">
+        <!-- Left: Calendar -->
+        <div class="col-span-8 bg-white rounded-2xl border border-gray-200 p-8">
+          <!-- Calendar Header -->
+          <div class="flex items-center justify-end gap-3 mb-6">
+            <select [(ngModel)]="currentYear" class="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 bg-white cursor-pointer">
+              <option [value]="2023">2023</option>
+              <option [value]="2024">2024</option>
+              <option [value]="2025">2025</option>
+              <option [value]="2026">2026</option>
+            </select>
+            <select [(ngModel)]="currentMonth" class="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 bg-white cursor-pointer">
+              <option *ngFor="let month of months; let i = index" [value]="i">{{ month }}</option>
+            </select>
+          </div>
+
+          <!-- Calendar Grid -->
+          <table class="w-full">
+            <thead>
+              <tr>
+                <th *ngFor="let day of weekDays" class="text-center text-sm font-medium text-gray-500 py-3 border-b border-gray-100">
+                  {{ day }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let week of getCalendarWeeks()" class="border-b border-gray-50">
+                <td *ngFor="let date of week" class="text-center py-1 relative">
+                  <!-- Range background -->
+                  <div *ngIf="isInRange(date)" class="absolute inset-y-2 inset-x-0 bg-orange-100"></div>
+                  
+                  <!-- Start connector -->
+                  <div *ngIf="isSelectionStart(date) && selectionEnd" class="absolute inset-y-2 left-1/2 right-0 bg-orange-100"></div>
+                  
+                  <!-- End connector -->
+                  <div *ngIf="isSelectionEnd(date)" class="absolute inset-y-2 left-0 right-1/2 bg-orange-100"></div>
+
+                  <button
+                    (click)="onDateClick(date)"
+                    class="relative z-10 h-12 w-12 rounded-full text-sm grid place-items-center mx-auto transition-all"
+                    [ngClass]="{
+                      'text-gray-900 hover:bg-gray-100': isCurrentMonth(date) && !isSelectionStart(date) && !isSelectionEnd(date),
+                      'text-gray-300 cursor-default': !isCurrentMonth(date),
+                      'bg-orange-400 text-white font-medium': isSelectionStart(date) || isSelectionEnd(date)
+                    }">
+                    {{ date?.getDate() }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Right: Leave Balance & Request Form -->
+        <div class="col-span-4 space-y-6">
+          <!-- Leave Balance Card -->
+          <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Leave Balance</h3>
+            
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-sm text-gray-600">Total Available</span>
+              <span class="text-2xl font-bold text-green-600">{{ totalAvailable }} Days</span>
+            </div>
+
+            <div class="space-y-3">
+              <div *ngFor="let balance of leaveBalance" class="flex items-center justify-between">
+                <span class="text-sm text-gray-600">{{ balance.type }}</span>
+                <span class="text-sm font-semibold text-gray-900">{{ balance.days }} Days</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- New Leave Request Card -->
+          <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 pb-4 border-b border-gray-100">New Leave Request</h3>
+
+            <!-- Selected Dates -->
+            <div class="mb-5">
+              <label class="block text-sm text-gray-600 mb-2">Selected Dates</label>
+              <div class="rounded-xl border border-gray-200 px-4 py-3 bg-gray-50">
+                <span class="text-sm text-gray-700">
+                  {{ formatDateRange() || 'Select dates on the calendar' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Leave Type -->
+            <div class="mb-5">
+              <label class="block text-sm text-gray-600 mb-2">Leave Type</label>
+              <div class="relative">
+                <select [(ngModel)]="leaveRequest.leaveType" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700 bg-white appearance-none cursor-pointer focus:outline-none focus:border-gray-300">
+                  <option *ngFor="let type of leaveTypes" [value]="type">{{ type }}</option>
+                </select>
+                <span class="i-lucide-chevron-down text-[16px] text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"></span>
+              </div>
+            </div>
+
+            <!-- Remaining Balance Alert -->
+            <div *ngIf="selectionStart && selectionEnd" class="mb-5 rounded-xl bg-green-50 border border-green-200 px-4 py-3">
+              <span class="text-sm text-green-700">
+                <span class="font-semibold">Remaining Balance:</span> {{ remainingBalance }} days {{ leaveRequest.leaveType }} leave after this request
+              </span>
+            </div>
+
+            <!-- Reason -->
+            <div class="mb-6">
+              <label class="block text-sm text-gray-600 mb-2">Reason for Leave</label>
+              <textarea 
+                [(ngModel)]="leaveRequest.reason"
+                class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700 bg-white resize-none focus:outline-none focus:border-gray-300"
+                rows="4"
+                placeholder="Provide a reason for your request (optional)"></textarea>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex items-center gap-3">
+              <button 
+                (click)="submitRequest()"
+                [disabled]="!selectionStart"
+                class="flex-1 px-6 py-3 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors">
+                Submit Request
+              </button>
+              <button 
+                (click)="cancelRequest()"
+                class="px-6 py-3 rounded-xl border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,95 +1,162 @@
-<div class="min-h-screen bg-[#F7F7F8]">
-  <!-- Top bar -->
-  <app-top-nav></app-top-nav>
+<div class="min-h-screen bg-[#F7F7F8] grid grid-cols-12">
+  <!-- Sidebar -->
+  <app-side-nav class="col-span-3 xl:col-span-2"></app-side-nav>
 
-  <!-- Main -->
-  <div class="mx-auto max-w-7xl px-6 py-8 grid grid-cols-12 gap-6">
-    <!-- Sidebar -->
-    <app-side-nav class="col-span-3 xl:col-span-2"></app-side-nav>
+  <!-- Right side: Top bar + Content -->
+  <div class="col-span-9 xl:col-span-10">
+    <!-- Top bar -->
+    <app-top-nav></app-top-nav>
 
     <!-- Content -->
-    <section class="col-span-9 xl:col-span-10 space-y-6">
-      <!-- Top cards -->
-      <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-12 md:col-span-5">
-          <div class="rounded-2xl overflow-hidden bg-[url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center">
-            <div class="p-6 bg-black/50 text-white">
-              <div class="text-2xl font-semibold">Hello Tolu,</div>
-              <div class="mt-1 text-white/90">Good morning, you have <b>10 new</b> leave applications, lets get started.</div>
-              <button class="mt-6 rounded-lg bg-white text-black px-5 py-2 font-medium">Review it</button>
+    <section class="px-[25px] py-6 space-y-5">
+      <!-- Top section: Hello Tolu (left) | Stats + Quick Actions (right) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- Left: Hello Tolu card (narrower, full height) -->
+        <div class="lg:col-span-4">
+          <div class="rounded-xl overflow-hidden bg-[url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center border border-gray-200 h-full">
+            <div class="p-6 bg-black/50 text-white h-full flex flex-col">
+              <div class="text-xl font-semibold">Hello Tolu,</div>
+              <div class="mt-2 text-sm text-white/90">Good morning, you have <b>10 new</b> leave applications, lets get started.</div>
+              <button class="mt-auto rounded-lg bg-white text-black px-4 py-2 text-sm font-medium w-fit">Review it</button>
             </div>
           </div>
         </div>
-        <div class="col-span-12 md:col-span-7 grid grid-cols-3 gap-4">
-          <div class="rounded-2xl bg-white p-5 border border-gray-100">
-            <div class="text-sm text-gray-500">Total Employees</div>
-            <div class="mt-2 text-3xl font-semibold">350</div>
-            <div class="mt-1 text-xs text-green-600">Active employees</div>
-          </div>
-          <div class="rounded-2xl bg-white p-5 border border-gray-100">
-            <div class="text-sm text-gray-500">Attendance Rate</div>
-            <div class="mt-2 flex items-center gap-3">
-              <div class="text-3xl font-semibold">200/350</div>
-              <span class="text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">90%</span>
-            </div>
-            <div class="mt-1 text-xs text-red-600">100 yet to clock in today</div>
-          </div>
-          <div class="rounded-2xl bg-white p-5 border border-gray-100">
-            <div class="text-sm text-gray-500">On Leave</div>
-            <div class="mt-2 flex items-center gap-3">
-              <div class="text-3xl font-semibold">50/350</div>
-              <span class="text-xs text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">70%</span>
-            </div>
-            <a class="mt-1 inline-block text-xs text-blue-600" href="javascript:void(0)">View Calendar</a>
-          </div>
-        </div>
-      </div>
 
-      <!-- Quick Actions -->
-      <div class="rounded-2xl bg-white p-4 border border-gray-100">
-        <div class="flex flex-wrap items-center gap-3">
-          <button class="rounded-lg bg-black text-white px-4 py-2 text-sm">Add New Employee</button>
-          <button class="rounded-lg border px-4 py-2 text-sm">Generate Report</button>
-          <button class="rounded-lg border px-4 py-2 text-sm">Send Announcement</button>
+        <!-- Right: Stats cards + Quick Actions stacked -->
+        <div class="lg:col-span-8 flex flex-col gap-4">
+          <!-- Stats cards in a row -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- Total Employees card -->
+            <div class="rounded-xl bg-white p-4 border border-gray-200 flex flex-col">
+              <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                <span class="i-lucide-users text-[16px]"></span>
+                <span class="font-medium">Total Employees</span>
+              </div>
+              <div class="flex items-baseline gap-2 mb-2">
+                <span class="text-2xl font-bold">350</span>
+                <span class="text-xs text-green-600">Active employees</span>
+              </div>
+              <div class="mt-auto flex items-center gap-1">
+                <span class="i-lucide-arrow-up text-[12px] text-green-600"></span>
+                <span class="text-xs text-green-600">+20 this month</span>
+              </div>
+            </div>
+
+            <!-- Attendance Rate card -->
+            <div class="rounded-xl bg-white p-4 border border-gray-200 flex flex-col">
+              <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                <span class="i-lucide-user-check text-[16px]"></span>
+                <span class="font-medium">Attendance Rate</span>
+              </div>
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-baseline gap-2">
+                  <span class="text-2xl font-bold">200/350</span>
+                  <span class="text-xs text-gray-500">Clocked In</span>
+                </div>
+                <div class="relative h-10 w-10">
+                  <svg class="h-10 w-10 -rotate-90" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15" fill="none" stroke="#e5e7eb" stroke-width="3"></circle>
+                    <circle cx="18" cy="18" r="15" fill="none" stroke="#22c55e" stroke-width="3" stroke-dasharray="85 100" stroke-linecap="round"></circle>
+                  </svg>
+                  <span class="absolute inset-0 flex items-center justify-center text-[10px] font-semibold text-green-600">90%</span>
+                </div>
+              </div>
+              <div class="mt-auto flex items-center gap-1">
+                <span class="i-lucide-alert-circle text-[12px] text-red-500"></span>
+                <span class="text-xs text-red-500">100 yet to clock in today</span>
+              </div>
+            </div>
+
+            <!-- On Leave card -->
+            <div class="rounded-xl bg-white p-4 border border-gray-200 flex flex-col">
+              <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                <span class="i-lucide-calendar text-[16px]"></span>
+                <span class="font-medium">On Leave</span>
+              </div>
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-baseline gap-2">
+                  <span class="text-2xl font-bold">50/350</span>
+                  <span class="text-xs text-gray-500">Employees on leave</span>
+                </div>
+                <div class="relative h-10 w-10">
+                  <svg class="h-10 w-10 -rotate-90" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15" fill="none" stroke="#e5e7eb" stroke-width="3"></circle>
+                    <circle cx="18" cy="18" r="15" fill="none" stroke="#3b82f6" stroke-width="3" stroke-dasharray="75 100" stroke-linecap="round"></circle>
+                  </svg>
+                  <span class="absolute inset-0 flex items-center justify-center text-[10px] font-semibold text-blue-600">75%</span>
+                </div>
+              </div>
+              <div class="mt-auto flex items-center gap-1">
+                <span class="i-lucide-arrow-up text-[12px] text-blue-600"></span>
+                <a class="text-xs text-blue-600" href="javascript:void(0)">View Calendar</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions below stats cards -->
+          <div class="rounded-xl bg-white p-4 border border-gray-200 flex-1 flex flex-col">
+            <div class="text-base font-semibold mb-3">Quick Actions</div>
+            <div class="flex flex-wrap items-center gap-3">
+              <button class="rounded-lg bg-black text-white px-4 py-2 text-sm flex items-center gap-2">
+                <span class="i-lucide-plus text-[14px]"></span>
+                <span>Add New Employee</span>
+              </button>
+              <button class="rounded-lg border border-gray-300 px-4 py-2 text-sm">Generate Report</button>
+              <button class="rounded-lg border border-gray-300 px-4 py-2 text-sm">Send Announcement</button>
+            </div>
+          </div>
         </div>
+        <!-- End right column -->
       </div>
 
       <!-- Employees table -->
-      <div class="rounded-2xl bg-white border border-gray-100">
-        <div class="flex items-center justify-between px-5 py-4">
-          <div class="font-semibold">Employees</div>
-          <div class="flex items-center gap-3">
-            <button class="rounded-lg border px-3 py-1.5 text-sm">Filter by</button>
-            <input class="rounded-lg border bg-gray-50 px-3 py-1.5 text-sm" placeholder="Search here" />
+      <div class="rounded-2xl bg-white p-6 border border-gray-200">
+        <!-- Header Section -->
+        <div class="flex items-center justify-between mb-6">
+          <div class="text-lg font-semibold">Employees</div>
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <button class="rounded-xl border border-gray-200 px-5 py-2.5 text-sm flex items-center gap-3 bg-white hover:bg-gray-50 transition-colors w-full">
+                <span class="i-lucide-sliders-horizontal text-[16px] text-gray-500"></span>
+                <span class="text-gray-600">Filter by</span>
+                <span class="i-lucide-chevron-down text-[16px] text-gray-400"></span>
+              </button>
+            </div>
+            <div class="relative">
+              <span class="i-lucide-search text-[16px] text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"></span>
+              <input class="rounded-xl border border-gray-200 bg-white pl-11 pr-4 py-2.5 text-sm w-[300px] placeholder:text-gray-400 focus:outline-none focus:border-gray-300 transition-colors" placeholder="Search here" />
+            </div>
           </div>
         </div>
-        <div class="border-t border-gray-100">
+
+        <!-- Inner Table Card -->
+        <div class="border border-gray-200 rounded-2xl overflow-hidden">
           <table class="w-full text-sm">
             <thead>
-              <tr class="text-left text-gray-500">
-                <th class="px-5 py-3">Employee ID</th>
-                <th class="px-5 py-3">Employee Name</th>
-                <th class="px-5 py-3">Role</th>
-                <th class="px-5 py-3">Department</th>
-                <th class="px-5 py-3">Status</th>
+              <tr class="text-left text-gray-500 bg-gray-50/80 border-b border-gray-200">
+                <th class="px-6 py-4 font-normal first:pl-8">Employee ID</th>
+                <th class="px-6 py-4 font-normal">Employee Name</th>
+                <th class="px-6 py-4 font-normal">Role</th>
+                <th class="px-6 py-4 font-normal">Department</th>
+                <th class="px-6 py-4 font-normal">Status</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let e of employees" class="border-t border-gray-100">
-                <td class="px-5 py-3">{{ e.id }}</td>
-                <td class="px-5 py-3">
+              <tr *ngFor="let e of employees; let last = last" [class.border-b]="!last" class="border-gray-100 hover:bg-gray-50/30 transition-colors">
+                <td class="px-6 py-5 text-gray-600 first:pl-8">{{ e.id }}</td>
+                <td class="px-6 py-5">
                   <div class="flex items-center gap-3">
-                    <img [src]="e.avatar" class="h-8 w-8 rounded-full" />
-                    <span class="font-medium">{{ e.name }}</span>
+                    <img [src]="e.avatar" class="h-9 w-9 rounded-full object-cover" />
+                    <span class="font-medium text-gray-900">{{ e.name }}</span>
                   </div>
                 </td>
-                <td class="px-5 py-3">{{ e.role }}</td>
-                <td class="px-5 py-3">{{ e.dept }}</td>
-                <td class="px-5 py-3">
+                <td class="px-6 py-5 text-gray-600">{{ e.role }}</td>
+                <td class="px-6 py-5 text-gray-600">{{ e.dept }}</td>
+                <td class="px-6 py-5">
                   <span [ngClass]="{
-                    'bg-yellow-100 text-yellow-700': e.status === 'On Leave',
-                    'bg-green-100 text-green-700': e.status === 'Clocked In'
-                  }" class="px-2 py-0.5 rounded-full text-xs font-medium">{{ e.status | uppercase }}</span>
+                    'bg-orange-100 text-orange-600': e.status === 'On Leave',
+                    'bg-green-100 text-green-600': e.status === 'Clocked In'
+                  }" class="px-3 py-1 rounded-full text-xs font-medium">{{ e.status | uppercase }}</span>
                 </td>
               </tr>
             </tbody>
@@ -100,44 +167,71 @@
       <!-- Bottom cards -->
       <div class="grid grid-cols-12 gap-6">
         <div class="col-span-12 md:col-span-7">
-          <div class="rounded-2xl bg-white border border-gray-100">
-            <div class="flex items-center justify-between px-5 py-4">
-              <div class="font-semibold">Recent Activity</div>
-              <a href="javascript:void(0)" class="text-sm text-blue-600">View all activity</a>
+          <div class="rounded-2xl bg-white border border-gray-200 p-6 h-full">
+            <div class="flex items-center justify-between mb-6">
+              <div class="text-lg font-semibold">Recent Activity</div>
+              <a href="javascript:void(0)" class="text-sm font-medium text-orange-400 hover:text-orange-500">View all activity</a>
             </div>
-            <div class="border-t border-gray-100 divide-y">
-              <div *ngFor="let a of activities" class="px-5 py-4 flex items-start gap-3">
-                <img [src]="a.avatar" class="h-9 w-9 rounded-full" />
+            <div class="space-y-6">
+              <div *ngFor="let a of activities" class="flex items-start gap-4">
+                <img [src]="a.avatar" class="h-10 w-10 rounded-full object-cover border border-gray-100" />
                 <div>
-                  <div class="text-sm"><span class="font-semibold">{{ a.who }}</span> {{ a.text }}</div>
-                  <div class="text-xs text-gray-500">{{ a.time }}</div>
+                  <div class="text-sm text-gray-600 leading-relaxed">
+                    <span class="font-semibold text-gray-900">{{ a.who }}</span> {{ a.text }}
+                  </div>
+                  <div class="text-xs text-gray-400 mt-1">{{ a.time }}</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="col-span-12 md:col-span-5">
-          <div class="rounded-2xl bg-white border border-gray-100 p-5">
-            <div class="font-semibold mb-4">Upcoming Events</div>
-            <div class="space-y-4">
-              <div *ngFor="let ev of events; let i = index" class="flex items-start gap-3">
-                <div
-                  class="h-9 w-9 rounded-lg grid place-items-center"
-                  [ngClass]="[
-                    i === 0 ? 'bg-amber-100' : '',
-                    i === 1 ? 'bg-red-100' : '',
-                    i === 2 ? 'bg-blue-100' : ''
-                  ]"
-                >
-                  <img
-                    [src]="i === 1 ? 'assets/images/drum.png' : 'assets/images/gift-box.png'"
-                    alt="event icon"
-                    class="h-6 w-6 object-contain"
-                  />
+          <div class="rounded-2xl bg-white border border-gray-200 p-6 h-full">
+            <div class="text-lg font-semibold mb-6">Upcoming Events</div>
+            <div class="space-y-6">
+              <div class="flex items-start gap-4">
+                <div class="h-10 w-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                  <svg width="20" height="20" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.285 7.47266V26.5203M2.85645 13.1869H25.7136V22.7108C25.7136 23.7211 25.3122 24.6901 24.5978 25.4045C23.8834 26.1189 22.9144 26.5203 21.9041 26.5203H6.66597C5.65562 26.5203 4.68665 26.1189 3.97223 25.4045C3.2578 24.6901 2.85645 23.7211 2.85645 22.7108V13.1869Z" stroke="#FFA629" stroke-width="1.90476" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14.2855 7.47264H8.5712C7.08358 5.98502 7.08358 3.24598 8.5712 1.75836C10.0588 0.270739 14.2855 0.805977 14.2855 3.66312M14.2855 7.47264V3.66312M14.2855 7.47264H19.9998C21.4874 5.98502 21.4874 3.24598 19.9998 1.75836C18.5121 0.270739 14.2855 0.805977 14.2855 3.66312M2.85691 7.47264H25.7141C26.2192 7.47264 26.7037 7.67332 27.0609 8.03054C27.4181 8.38775 27.6188 8.87223 27.6188 9.37741V11.2822C27.6188 11.7873 27.4181 12.2718 27.0609 12.629C26.7037 12.9862 26.2192 13.1869 25.7141 13.1869H2.85691C2.35174 13.1869 1.86725 12.9862 1.51004 12.629C1.15283 12.2718 0.952148 11.7873 0.952148 11.2822V9.37741C0.952148 8.87223 1.15283 8.38775 1.51004 8.03054C1.86725 7.67332 2.35174 7.47264 2.85691 7.47264Z" stroke="#FFA629" stroke-width="1.90476" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
                 </div>
                 <div>
-                  <div class="font-medium">{{ ev.title }}</div>
-                  <div class="text-xs text-gray-500">{{ ev.date }}</div>
+                  <div class="font-semibold text-gray-900">Public Holiday: Christmas</div>
+                  <div class="text-sm text-gray-400 mt-1">Wednesday December. 25 2025</div>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="h-10 w-10 rounded-xl bg-yellow-50 flex items-center justify-center shrink-0">
+<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_96_6819)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M21.5625 26.25C26.2312 26.25 30 24.375 30 21.5625V3.75C30 1.875 26.25 0 21.5625 0C16.875 0 13.125 1.875 13.125 3.75V10.3125C15.3187 11.2312 17.1938 12.7688 18.525 14.7188C19.4438 14.8987 20.4563 14.9981 21.5625 14.9981C24.0188 14.9981 26.0625 14.5087 27.525 13.7119C27.7326 13.5978 27.9347 13.4739 28.1306 13.3406V15.9281C28.1306 16.3687 27.78 17.0531 26.6269 17.6831C25.5094 18.2925 23.7956 18.7406 21.5644 18.7406C21.1181 18.7406 20.6931 18.7238 20.2894 18.69C20.4394 19.3063 20.5394 19.9375 20.5894 20.5837C20.9056 20.6012 21.2306 20.61 21.5644 20.61C24.0206 20.61 26.0644 20.1206 27.5269 19.3237C27.7345 19.2096 27.9366 19.0857 28.1325 18.9525V21.54C28.1325 21.9825 27.8531 22.6388 26.6494 23.2875C25.4644 23.925 23.6869 24.3525 21.5681 24.3525C21.1369 24.3525 20.7194 24.335 20.3156 24.3C20.1715 24.9232 19.9777 25.5339 19.7362 26.1262C20.3263 26.1925 20.9362 26.2256 21.5662 26.2256L21.5625 26.25ZM26.625 12.075C27.7781 11.445 28.1287 10.7606 28.1287 10.32V7.7325C27.935 7.865 27.7331 7.98875 27.5231 8.10375C26.0644 8.90063 24.0169 9.39 21.5606 9.39C19.1044 9.39 17.0606 8.90063 15.5981 8.10375C15.3905 7.98963 15.1884 7.86575 14.9925 7.7325V10.32C14.9925 10.7606 15.3431 11.445 16.4963 12.0731C17.6138 12.6825 19.3275 13.1306 21.5588 13.1306C23.79 13.1306 25.4963 12.6825 26.6213 12.0731L26.625 12.075ZM15 4.6875C15 4.1475 15.2344 3.62812 15.6712 3.31125C15.9094 3.13875 16.1681 2.96625 16.3725 2.8725C16.8844 2.63625 19.4475 1.87313 21.5662 1.87313C23.685 1.87313 25.5225 2.29875 26.76 2.8725C26.9925 2.97937 27.2494 3.14625 27.4763 3.31125C27.9094 3.62438 28.1325 4.14 28.1325 4.67438V4.68563C28.1325 5.12625 27.7819 5.81063 26.6287 6.44062C25.5112 7.05 23.7975 7.49813 21.5662 7.49813C19.335 7.49813 17.6288 7.04812 16.5038 6.44062C15.3506 5.8125 15 5.12625 15 4.6875Z" fill="#FFA400"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.875 21.5625C16.875 26.2312 13.1062 30 8.4375 30C3.76875 30 0 26.2312 0 21.5625C0 16.8937 3.76875 13.125 8.4375 13.125C13.1062 13.125 16.875 16.8937 16.875 21.5625ZM15 21.5625C15 25.1812 12.0562 28.125 8.4375 28.125C4.81875 28.125 1.875 25.1812 1.875 21.5625C1.875 17.9437 4.81875 15 8.4375 15C12.0562 15 15 17.9437 15 21.5625Z" fill="#FFA400"/>
+</g>
+<defs>
+<clipPath id="clip0_96_6819">
+<rect width="30" height="30" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+                </div>
+                <div>
+                  <div class="font-semibold text-gray-900">Payroll Run Due</div>
+                  <div class="text-sm text-gray-400 mt-1">Monday December. 29 2025</div>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="h-10 w-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                  <svg width="20" height="20" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.285 7.47266V26.5203M2.85645 13.1869H25.7136V22.7108C25.7136 23.7211 25.3122 24.6901 24.5978 25.4045C23.8834 26.1189 22.9144 26.5203 21.9041 26.5203H6.66597C5.65562 26.5203 4.68665 26.1189 3.97223 25.4045C3.2578 24.6901 2.85645 23.7211 2.85645 22.7108V13.1869Z" stroke="#FFA629" stroke-width="1.90476" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14.2855 7.47264H8.5712C7.08358 5.98502 7.08358 3.24598 8.5712 1.75836C10.0588 0.270739 14.2855 0.805977 14.2855 3.66312M14.2855 7.47264V3.66312M14.2855 7.47264H19.9998C21.4874 5.98502 21.4874 3.24598 19.9998 1.75836C18.5121 0.270739 14.2855 0.805977 14.2855 3.66312M2.85691 7.47264H25.7141C26.2192 7.47264 26.7037 7.67332 27.0609 8.03054C27.4181 8.38775 27.6188 8.87223 27.6188 9.37741V11.2822C27.6188 11.7873 27.4181 12.2718 27.0609 12.629C26.7037 12.9862 26.2192 13.1869 25.7141 13.1869H2.85691C2.35174 13.1869 1.86725 12.9862 1.51004 12.629C1.15283 12.2718 0.952148 11.7873 0.952148 11.2822V9.37741C0.952148 8.87223 1.15283 8.38775 1.51004 8.03054C1.86725 7.67332 2.35174 7.47264 2.85691 7.47264Z" stroke="#FFA629" stroke-width="1.90476" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="font-semibold text-gray-900">Public Holiday: New Years</div>
+                  <div class="text-sm text-gray-400 mt-1">Wednesday December. 1 2026</div>
                 </div>
               </div>
             </div>
@@ -146,4 +240,5 @@
       </div>
     </section>
   </div>
+  <!-- End right side -->
 </div>
