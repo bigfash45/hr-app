@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { TopNavComponent } from '../../shared/top-nav/top-nav.component';
 import { SideNavComponent } from '../../shared/side-nav/side-nav.component';
+import { LeaveApprovedModalComponent, ApprovalItem } from '../../shared/modals/leave-approved-modal/leave-approved-modal.component';
 
 interface LeaveDetail {
   id: number;
@@ -29,11 +30,19 @@ interface LeaveDetail {
 @Component({
   selector: 'app-leave-detail-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, TopNavComponent, SideNavComponent],
+  imports: [CommonModule, RouterModule, TopNavComponent, SideNavComponent, LeaveApprovedModalComponent],
   templateUrl: './leave-detail.page.html',
 })
 export class LeaveDetailPage {
   detail?: LeaveDetail;
+  showApprovedModal = false;
+  approvedModal = {
+    leaveType: '',
+    dates: '',
+    durationDays: 0,
+    approvals: [] as ApprovalItem[],
+    leaveBalance: 0,
+  };
 
   constructor(private route: ActivatedRoute) {
     const id = Number(this.route.snapshot.paramMap.get('id')) || 1;
@@ -97,5 +106,55 @@ export class LeaveDetailPage {
       default:
         return 'bg-gray-100 text-gray-600';
     }
+  }
+
+  approveAndShowModal() {
+    if (!this.detail) return;
+
+    // Derive simple values from mock data
+    const dates = this.detail.summary.dateRequested;
+    const leaveType = this.detail.summary.leaveType;
+    // Try to infer duration from text like "July 14-July 16, 2025" -> 3 days
+    let durationDays = 0;
+    try {
+      const parts = dates.split('-');
+      if (parts.length === 2) {
+        const endStr = parts[1].trim();
+        const end = new Date(endStr);
+        let startStr = parts[0].trim();
+        // If the start part has no year, append the end year
+        if (!/\d{4}/.test(startStr) && !/,\s*\d{4}/.test(startStr) && !isNaN(end.getTime())) {
+          startStr = `${startStr}, ${end.getFullYear()}`;
+        }
+        const start = new Date(startStr);
+        if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+          const diff = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+          if (!isNaN(diff)) durationDays = Math.max(diff, 1);
+        }
+      }
+    } catch {}
+    if (!durationDays) durationDays = 3;
+
+    const approvals: ApprovalItem[] = [
+      {
+        name: this.detail.summary.lineManager,
+        role: 'Manager',
+        dateApproved: new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }),
+      },
+      {
+        name: 'Tolu Folusho',
+        role: 'HR',
+        dateApproved: new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }),
+      },
+    ];
+
+    const leaveBalance = (this.detail.balances[0]?.days ?? 0);
+
+    this.approvedModal = { leaveType, dates, durationDays, approvals, leaveBalance };
+    this.showApprovedModal = true;
+  }
+
+  closeApprovedModal() {
+    this.showApprovedModal = false;
   }
 }
