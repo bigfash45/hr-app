@@ -1,0 +1,387 @@
+<!-- Breadcrumb -->
+<div class="text-xs text-gray-500 mb-4">
+  <a href="javascript:void(0)" (click)="onClose()" class="hover:text-gray-700">Dashboard</a>
+  <span class="mx-1">&gt;</span>
+  <a href="javascript:void(0)" (click)="onClose()" class="hover:text-gray-700">Employees</a>
+  <span class="mx-1">&gt;</span>
+  <span class="text-gray-900 font-medium">Add New Employee</span>
+</div>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-semibold">Add New Employee</h1>
+  <button (click)="onClose()" class="text-gray-500 hover:text-gray-700">
+    <span class="i-lucide-x text-[20px]"></span>
+  </button>
+</div>
+
+<div class="grid grid-cols-12 gap-8">
+  <!-- Left stepper -->
+  <div class="col-span-3 lg:col-span-3">
+    <ol class="space-y-8 relative">
+      <div class="absolute left-[15px] top-8 bottom-0 w-px bg-gray-200"></div>
+      <!-- Step 1 -->
+      <li class="relative flex gap-4 items-start cursor-pointer" (click)="goToStep(1)">
+        <div class="relative z-10 h-8 w-8 rounded-full text-sm font-medium grid place-items-center shrink-0 transition-colors"
+             [ngClass]="currentStep >= 1 ? 'bg-black text-white' : 'border border-gray-300 bg-white text-gray-500'">1</div>
+        <div class="pt-1">
+          <div class="text-sm font-semibold" [ngClass]="currentStep >= 1 ? 'text-gray-900' : 'text-gray-500'">Personal Details</div>
+          <div class="text-xs mt-0.5" [ngClass]="currentStep >= 1 ? 'text-gray-500' : 'text-gray-400'">Core personal information</div>
+        </div>
+      </li>
+      <!-- Step 2 -->
+      <li class="relative flex gap-4 items-start cursor-pointer" (click)="goToStep(2)">
+        <div class="relative z-10 h-8 w-8 rounded-full text-sm font-medium grid place-items-center shrink-0 transition-colors"
+             [ngClass]="currentStep >= 2 ? 'bg-black text-white' : 'border border-gray-300 bg-white text-gray-500'">2</div>
+        <div class="pt-1">
+          <div class="text-sm font-medium" [ngClass]="currentStep >= 2 ? 'text-gray-900' : 'text-gray-500'">Employment Details</div>
+          <div class="text-xs mt-0.5" [ngClass]="currentStep >= 2 ? 'text-gray-500' : 'text-gray-400'">Role and position information</div>
+        </div>
+      </li>
+      <!-- Step 3 -->
+      <li class="relative flex gap-4 items-start cursor-pointer" (click)="goToStep(3)">
+        <div class="relative z-10 h-8 w-8 rounded-full text-sm font-medium grid place-items-center shrink-0 transition-colors"
+             [ngClass]="currentStep >= 3 ? 'bg-black text-white' : 'border border-gray-300 bg-white text-gray-500'">3</div>
+        <div class="pt-1">
+          <div class="text-sm font-medium" [ngClass]="currentStep >= 3 ? 'text-gray-900' : 'text-gray-500'">Compensation &amp; Benefits</div>
+          <div class="text-xs mt-0.5" [ngClass]="currentStep >= 3 ? 'text-gray-500' : 'text-gray-400'">Payroll &amp; benefits</div>
+        </div>
+      </li>
+      <!-- Step 4 -->
+      <li class="relative flex gap-4 items-start cursor-pointer" (click)="goToStep(4)">
+        <div class="relative z-10 h-8 w-8 rounded-full text-sm font-medium grid place-items-center shrink-0 transition-colors"
+             [ngClass]="currentStep >= 4 ? 'bg-black text-white' : 'border border-gray-300 bg-white text-gray-500'">4</div>
+        <div class="pt-1">
+          <div class="text-sm font-medium" [ngClass]="currentStep >= 4 ? 'text-gray-900' : 'text-gray-500'">Onboarding Checklist</div>
+          <div class="text-xs mt-0.5" [ngClass]="currentStep >= 4 ? 'text-gray-500' : 'text-gray-400'">Tasks for new hire setup</div>
+        </div>
+      </li>
+      <!-- Step 5 -->
+      <li class="relative flex gap-4 items-start cursor-pointer" (click)="goToStep(5)">
+        <div class="relative z-10 h-8 w-8 rounded-full text-sm font-medium grid place-items-center shrink-0 transition-colors"
+             [ngClass]="currentStep >= 5 ? 'bg-black text-white' : 'border border-gray-300 bg-white text-gray-500'">5</div>
+        <div class="pt-1">
+          <div class="text-sm font-medium" [ngClass]="currentStep >= 5 ? 'text-gray-900' : 'text-gray-500'">Document Upload</div>
+          <div class="text-xs mt-0.5" [ngClass]="currentStep >= 5 ? 'text-gray-500' : 'text-gray-400'">Required new hire documents</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Right card -->
+  <div class="col-span-9 lg:col-span-9">
+    <div class="bg-white border border-gray-200 rounded-2xl p-8">
+
+      <!-- STEP 1: Personal Details -->
+      <div *ngIf="currentStep === 1">
+        <h2 class="text-lg font-semibold mb-8">Personal Details</h2>
+        <div class="grid grid-cols-12 gap-8">
+          <!-- Avatar -->
+          <div class="col-span-12 md:col-span-3">
+            <div class="relative w-fit mx-auto md:mx-0">
+              <img class="h-32 w-32 rounded-full object-cover border-4 border-gray-50" src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=160" alt="employee" />
+              <button class="absolute bottom-1 right-1 h-8 w-8 rounded-full bg-orange-400 text-white grid place-items-center text-xs border-2 border-white">
+                <span class="i-lucide-pencil text-[14px]"></span>
+              </button>
+            </div>
+          </div>
+          <!-- Form fields -->
+          <div class="col-span-12 md:col-span-9">
+            <div class="grid grid-cols-2 gap-x-6 gap-y-5">
+              <div>
+                <label class="block text-sm text-gray-600 mb-2">First Name <span class="text-red-500">*</span></label>
+                <input [(ngModel)]="personalDetails.firstName" class="w-full rounded-xl border px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" [ngClass]="errors['firstName'] ? 'border-red-400' : 'border-gray-200'" />
+                <span *ngIf="errors['firstName']" class="text-xs text-red-500 mt-1">{{ errors['firstName'] }}</span>
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-2">Last Name <span class="text-red-500">*</span></label>
+                <input [(ngModel)]="personalDetails.lastName" class="w-full rounded-xl border px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" [ngClass]="errors['lastName'] ? 'border-red-400' : 'border-gray-200'" />
+                <span *ngIf="errors['lastName']" class="text-xs text-red-500 mt-1">{{ errors['lastName'] }}</span>
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-2">Middle Name</label>
+                <input [(ngModel)]="personalDetails.middleName" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" />
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-2">Employee ID</label>
+                <input [(ngModel)]="personalDetails.employeeId" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" placeholder="Auto-generated" />
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-2">Employment Type</label>
+                <select [(ngModel)]="personalDetails.employmentType" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400 bg-white appearance-none cursor-pointer">
+                  <option value="">Select type</option>
+                  <option *ngFor="let type of employmentTypes" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-2">Date of Birth</label>
+                <input [(ngModel)]="personalDetails.dateOfBirth" type="date" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" />
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-2">Joining Date</label>
+                <input [(ngModel)]="personalDetails.joiningDate" type="date" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" />
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-2">Nationality</label>
+                <select [(ngModel)]="personalDetails.nationality" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400 bg-white appearance-none cursor-pointer">
+                  <option value="">Select nationality</option>
+                  <option *ngFor="let nat of nationalities" [value]="nat">{{ nat }}</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-2">Marital Status</label>
+                <select [(ngModel)]="personalDetails.maritalStatus" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400 bg-white appearance-none cursor-pointer">
+                  <option value="">Select status</option>
+                  <option *ngFor="let status of maritalStatuses" [value]="status">{{ status }}</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-2">Phone Number <span class="text-red-500">*</span></label>
+                <input [(ngModel)]="personalDetails.phoneNumber" class="w-full rounded-xl border px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" [ngClass]="errors['phoneNumber'] ? 'border-red-400' : 'border-gray-200'" placeholder="+234 000 000 0000" />
+                <span *ngIf="errors['phoneNumber']" class="text-xs text-red-500 mt-1">{{ errors['phoneNumber'] }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Employment Details -->
+      <div *ngIf="currentStep === 2">
+        <h2 class="text-lg font-semibold mb-8">Employment Details</h2>
+        <div class="grid grid-cols-2 gap-x-6 gap-y-5">
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Department <span class="text-red-500">*</span></label>
+            <select [(ngModel)]="employmentDetails.department" class="w-full rounded-xl border px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400 bg-white appearance-none cursor-pointer" [ngClass]="errors['department'] ? 'border-red-400' : 'border-gray-200'">
+              <option value="">Select department</option>
+              <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+            </select>
+            <span *ngIf="errors['department']" class="text-xs text-red-500 mt-1">{{ errors['department'] }}</span>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Job Title <span class="text-red-500">*</span></label>
+            <input [(ngModel)]="employmentDetails.jobTitle" class="w-full rounded-xl border px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" [ngClass]="errors['jobTitle'] ? 'border-red-400' : 'border-gray-200'" placeholder="e.g. Frontend Developer" />
+            <span *ngIf="errors['jobTitle']" class="text-xs text-red-500 mt-1">{{ errors['jobTitle'] }}</span>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Reporting Manager</label>
+            <select [(ngModel)]="employmentDetails.reportingManager" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400 bg-white appearance-none cursor-pointer">
+              <option value="">Select manager</option>
+              <option *ngFor="let mgr of managers" [value]="mgr.name">{{ mgr.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Work Location</label>
+            <select [(ngModel)]="employmentDetails.workLocation" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400 bg-white appearance-none cursor-pointer">
+              <option value="">Select location</option>
+              <option *ngFor="let loc of workLocations" [value]="loc">{{ loc }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Work Schedule</label>
+            <select [(ngModel)]="employmentDetails.workSchedule" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400 bg-white appearance-none cursor-pointer">
+              <option value="">Select schedule</option>
+              <option *ngFor="let sched of workSchedules" [value]="sched">{{ sched }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Probation Period (months)</label>
+            <input [(ngModel)]="employmentDetails.probationPeriod" type="number" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" placeholder="e.g. 3" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Contract End Date</label>
+            <input [(ngModel)]="employmentDetails.contractEndDate" type="date" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" />
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Compensation & Benefits -->
+      <div *ngIf="currentStep === 3">
+        <h2 class="text-lg font-semibold mb-8">Compensation &amp; Benefits</h2>
+        <div class="grid grid-cols-2 gap-x-6 gap-y-5">
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Basic Salary <span class="text-red-500">*</span></label>
+            <input [(ngModel)]="compensationDetails.basicSalary" class="w-full rounded-xl border px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" [ngClass]="errors['basicSalary'] ? 'border-red-400' : 'border-gray-200'" placeholder="e.g. 500000" />
+            <span *ngIf="errors['basicSalary']" class="text-xs text-red-500 mt-1">{{ errors['basicSalary'] }}</span>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Pay Frequency <span class="text-red-500">*</span></label>
+            <select [(ngModel)]="compensationDetails.payFrequency" class="w-full rounded-xl border px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400 bg-white appearance-none cursor-pointer" [ngClass]="errors['payFrequency'] ? 'border-red-400' : 'border-gray-200'">
+              <option value="">Select frequency</option>
+              <option *ngFor="let freq of payFrequencies" [value]="freq">{{ freq }}</option>
+            </select>
+            <span *ngIf="errors['payFrequency']" class="text-xs text-red-500 mt-1">{{ errors['payFrequency'] }}</span>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Bank Name</label>
+            <input [(ngModel)]="compensationDetails.bankName" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" placeholder="e.g. First Bank" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Account Number</label>
+            <input [(ngModel)]="compensationDetails.accountNumber" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" placeholder="e.g. 0123456789" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Tax ID</label>
+            <input [(ngModel)]="compensationDetails.taxId" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" placeholder="Tax Identification Number" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Bonus</label>
+            <input [(ngModel)]="compensationDetails.bonus" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400" placeholder="Annual bonus amount" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Health Insurance</label>
+            <select [(ngModel)]="compensationDetails.healthInsurance" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400 bg-white appearance-none cursor-pointer">
+              <option value="">Select plan</option>
+              <option *ngFor="let plan of healthInsuranceOptions" [value]="plan">{{ plan }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">Retirement Plan</label>
+            <select [(ngModel)]="compensationDetails.retirementPlan" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400 bg-white appearance-none cursor-pointer">
+              <option value="">Select plan</option>
+              <option *ngFor="let plan of retirementPlans" [value]="plan">{{ plan }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Onboarding Checklist -->
+      <div *ngIf="currentStep === 4">
+        <h2 class="text-lg font-semibold mb-8">Onboarding Checklist</h2>
+        <p class="text-sm text-gray-500 mb-6">Complete the following tasks for the new hire setup:</p>
+        <div class="space-y-4">
+          <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors">
+            <input type="checkbox" [(ngModel)]="onboardingChecklist.welcomeEmail" class="h-5 w-5 rounded border-gray-300 text-black focus:ring-black" />
+            <div>
+              <div class="text-sm font-medium text-gray-900">Send Welcome Email</div>
+              <div class="text-xs text-gray-500">Send onboarding information and first-day instructions</div>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors">
+            <input type="checkbox" [(ngModel)]="onboardingChecklist.itSetup" class="h-5 w-5 rounded border-gray-300 text-black focus:ring-black" />
+            <div>
+              <div class="text-sm font-medium text-gray-900">IT Setup & Equipment</div>
+              <div class="text-xs text-gray-500">Laptop, email account, software access</div>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors">
+            <input type="checkbox" [(ngModel)]="onboardingChecklist.accessCards" class="h-5 w-5 rounded border-gray-300 text-black focus:ring-black" />
+            <div>
+              <div class="text-sm font-medium text-gray-900">Access Cards & Keys</div>
+              <div class="text-xs text-gray-500">Building access and security credentials</div>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors">
+            <input type="checkbox" [(ngModel)]="onboardingChecklist.workstation" class="h-5 w-5 rounded border-gray-300 text-black focus:ring-black" />
+            <div>
+              <div class="text-sm font-medium text-gray-900">Workstation Setup</div>
+              <div class="text-xs text-gray-500">Desk, chair, and office supplies</div>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors">
+            <input type="checkbox" [(ngModel)]="onboardingChecklist.orientationScheduled" class="h-5 w-5 rounded border-gray-300 text-black focus:ring-black" />
+            <div>
+              <div class="text-sm font-medium text-gray-900">Schedule Orientation</div>
+              <div class="text-xs text-gray-500">HR orientation and team introductions</div>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors">
+            <input type="checkbox" [(ngModel)]="onboardingChecklist.mentorAssigned" class="h-5 w-5 rounded border-gray-300 text-black focus:ring-black" />
+            <div>
+              <div class="text-sm font-medium text-gray-900">Assign Mentor/Buddy</div>
+              <div class="text-xs text-gray-500">Pair with experienced team member</div>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors">
+            <input type="checkbox" [(ngModel)]="onboardingChecklist.policiesAcknowledged" class="h-5 w-5 rounded border-gray-300 text-black focus:ring-black" />
+            <div>
+              <div class="text-sm font-medium text-gray-900">Policies Acknowledgment</div>
+              <div class="text-xs text-gray-500">Review and sign company policies</div>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors">
+            <input type="checkbox" [(ngModel)]="onboardingChecklist.emergencyContact" class="h-5 w-5 rounded border-gray-300 text-black focus:ring-black" />
+            <div>
+              <div class="text-sm font-medium text-gray-900">Emergency Contact Info</div>
+              <div class="text-xs text-gray-500">Collect emergency contact details</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- STEP 5: Document Upload -->
+      <div *ngIf="currentStep === 5">
+        <h2 class="text-lg font-semibold mb-8">Document Upload</h2>
+        <p class="text-sm text-gray-500 mb-6">Upload required documents for the new employee:</p>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-gray-300 transition-colors">
+            <span class="i-lucide-file-text text-[32px] text-gray-400 mx-auto mb-2"></span>
+            <div class="text-sm font-medium text-gray-900 mb-1">Resume / CV</div>
+            <div class="text-xs text-gray-500 mb-3">PDF, DOC up to 5MB</div>
+            <input type="file" (change)="onFileSelect($event, 'resume')" class="hidden" id="resume" accept=".pdf,.doc,.docx" />
+            <label for="resume" class="inline-block px-4 py-2 rounded-lg bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200">
+              {{ documents.resume ? documents.resume.name : 'Choose file' }}
+            </label>
+          </div>
+          <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-gray-300 transition-colors">
+            <span class="i-lucide-id-card text-[32px] text-gray-400 mx-auto mb-2"></span>
+            <div class="text-sm font-medium text-gray-900 mb-1">ID Proof</div>
+            <div class="text-xs text-gray-500 mb-3">National ID, Passport, etc.</div>
+            <input type="file" (change)="onFileSelect($event, 'idProof')" class="hidden" id="idProof" accept=".pdf,.jpg,.jpeg,.png" />
+            <label for="idProof" class="inline-block px-4 py-2 rounded-lg bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200">
+              {{ documents.idProof ? documents.idProof.name : 'Choose file' }}
+            </label>
+          </div>
+          <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-gray-300 transition-colors">
+            <span class="i-lucide-home text-[32px] text-gray-400 mx-auto mb-2"></span>
+            <div class="text-sm font-medium text-gray-900 mb-1">Address Proof</div>
+            <div class="text-xs text-gray-500 mb-3">Utility bill, Bank statement</div>
+            <input type="file" (change)="onFileSelect($event, 'addressProof')" class="hidden" id="addressProof" accept=".pdf,.jpg,.jpeg,.png" />
+            <label for="addressProof" class="inline-block px-4 py-2 rounded-lg bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200">
+              {{ documents.addressProof ? documents.addressProof.name : 'Choose file' }}
+            </label>
+          </div>
+          <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-gray-300 transition-colors">
+            <span class="i-lucide-graduation-cap text-[32px] text-gray-400 mx-auto mb-2"></span>
+            <div class="text-sm font-medium text-gray-900 mb-1">Education Certificates</div>
+            <div class="text-xs text-gray-500 mb-3">Degrees, Diplomas</div>
+            <input type="file" (change)="onFileSelect($event, 'educationCertificates')" class="hidden" id="educationCerts" accept=".pdf,.jpg,.jpeg,.png" />
+            <label for="educationCerts" class="inline-block px-4 py-2 rounded-lg bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200">
+              {{ documents.educationCertificates ? documents.educationCertificates.name : 'Choose file' }}
+            </label>
+          </div>
+          <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-gray-300 transition-colors">
+            <span class="i-lucide-briefcase text-[32px] text-gray-400 mx-auto mb-2"></span>
+            <div class="text-sm font-medium text-gray-900 mb-1">Previous Employment</div>
+            <div class="text-xs text-gray-500 mb-3">Experience letters, Relieving letters</div>
+            <input type="file" (change)="onFileSelect($event, 'previousEmployment')" class="hidden" id="prevEmployment" accept=".pdf,.jpg,.jpeg,.png" />
+            <label for="prevEmployment" class="inline-block px-4 py-2 rounded-lg bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200">
+              {{ documents.previousEmployment ? documents.previousEmployment.name : 'Choose file' }}
+            </label>
+          </div>
+          <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-gray-300 transition-colors">
+            <span class="i-lucide-landmark text-[32px] text-gray-400 mx-auto mb-2"></span>
+            <div class="text-sm font-medium text-gray-900 mb-1">Bank Details</div>
+            <div class="text-xs text-gray-500 mb-3">Cancelled cheque, Account statement</div>
+            <input type="file" (change)="onFileSelect($event, 'bankDetails')" class="hidden" id="bankDetails" accept=".pdf,.jpg,.jpeg,.png" />
+            <label for="bankDetails" class="inline-block px-4 py-2 rounded-lg bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200">
+              {{ documents.bankDetails ? documents.bankDetails.name : 'Choose file' }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="flex justify-end gap-4 pt-8 mt-6 border-t border-gray-100">
+        <button *ngIf="currentStep > 1" (click)="previousStep()" class="px-6 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 bg-white hover:bg-gray-50 font-medium">
+          Previous
+        </button>
+        <button *ngIf="currentStep < totalSteps" (click)="nextStep()" class="px-6 py-2.5 rounded-xl bg-black text-white text-sm font-medium hover:bg-gray-900">
+          Next Step
+        </button>
+        <button *ngIf="currentStep === totalSteps" (click)="submitForm()" class="px-6 py-2.5 rounded-xl bg-black text-white text-sm font-medium hover:bg-gray-900">
+          Submit
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

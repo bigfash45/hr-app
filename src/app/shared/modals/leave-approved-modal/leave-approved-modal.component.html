@@ -1,0 +1,63 @@
+<!-- Backdrop -->
+<div class="fixed inset-0 z-40 bg-black/40"></div>
+
+<!-- Modal -->
+<div class="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6">
+  <div class="mt-10 w-full max-w-md rounded-2xl bg-white shadow-xl border border-gray-200">
+    <div class="p-6">
+      <!-- Main check icon (50px radius => 100x100) -->
+      <div class="mx-auto rounded-full grid place-items-center" style="width:100px;height:100px;">
+        <img src="assets/images/check-icon.png" alt="Approved" class="rounded-full object-contain" style="width:100px;height:100px;" />
+      </div>
+
+      <!-- Title -->
+      <h2 class="mt-4 text-center text-xl font-bold text-gray-900">Leave Request Fully Approved</h2>
+      <p class="mt-1 text-center text-sm text-gray-500">Your leave dates are now confirmed in the system</p>
+
+      <!-- Info list as a single block with #2E92671A background -->
+      <div class="mt-6 rounded-xl bg-[#2E92671A] overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-3">
+          <span class="text-sm text-gray-600">Leave Type</span>
+          <span class="text-sm font-semibold text-gray-900">{{ leaveType }}</span>
+        </div>
+        <div class="flex items-center justify-between px-4 py-3">
+          <span class="text-sm text-gray-600">Dates</span>
+          <span class="text-sm font-semibold text-gray-900">{{ dates }}</span>
+        </div>
+        <div class="flex items-center justify-between px-4 py-3">
+          <span class="text-sm text-gray-600">Duration</span>
+          <span class="text-sm font-semibold text-gray-900">{{ durationDays }} Days</span>
+        </div>
+      </div>
+
+      <!-- Approval history -->
+      <div class="mt-6">
+        <h3 class="text-sm font-semibold text-gray-900">Approval History</h3>
+        <div class="mt-3 space-y-3">
+          <div *ngFor="let a of approvals" class="flex items-start gap-3">
+            <img src="assets/images/check-icon.png" alt="Approved" class="rounded-full object-contain shrink-0" style="width:40px;height:40px;" />
+            <div class="flex-1">
+              <div class="text-sm text-gray-900">
+                {{ a.name }} <span class="text-gray-500">({{ a.role }})</span>
+              </div>
+              <div class="text-xs text-gray-500">Approved {{ a.dateApproved }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leave balance pill -->
+      <div class="mt-6">
+        <div class="flex items-center justify-between rounded-xl bg-green-50 px-4 py-3">
+          <span class="text-sm text-green-700">Leave Balance</span>
+          <span class="text-sm font-bold text-green-700">{{ leaveBalance }} Days</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="mt-6 flex items-center justify-center">
+        <button (click)="onClose()" class="px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-black">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
