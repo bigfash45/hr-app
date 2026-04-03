@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Design tokens — PROVISIONAL
+
+   These are placeholder values, not the NowNowHR brand palette. They were
+   picked to satisfy WCAG 2.1 AA contrast (PRD §10.3) so the app is usable and
+   accessible while the Figma file cannot be read.
+
+   TO REPLACE: pull the Figma file's colour variables and swap the triples
+   below. Every component references these through Tailwind's semantic names
+   (bg-surface, text-on-surface, border-outline), so nothing else changes.
+
+   Format is space-separated RGB channels — required so Tailwind's opacity
+   modifiers (bg-primary/90) work. Not hex, not rgb().
+   ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --md-primary: 21 92 168;
+  --md-on-primary: 255 255 255;
+  --md-primary-container: 219 233 250;
+  --md-on-primary-container: 8 47 89;
+
+  --md-secondary: 74 86 102;
+  --md-on-secondary: 255 255 255;
+
+  --md-surface: 255 255 255;
+  --md-on-surface: 24 28 34;
+  --md-surface-variant: 235 239 244;
+  --md-on-surface-variant: 82 90 102;
+  --md-surface-container: 246 248 251;
+
+  --md-outline: 176 184 195;
+  --md-outline-variant: 220 226 234;
+  --md-scrim: 12 16 22;
+
+  --md-error: 178 26 32;
+  --md-on-error: 255 255 255;
+  --md-error-container: 253 226 227;
+  --md-on-error-container: 106 12 17;
+
+  --md-success: 20 116 74;
+  --md-on-success: 255 255 255;
+  --md-success-container: 214 242 227;
+  --md-on-success-container: 8 63 40;
+
+  --md-warning: 152 90 8;
+  --md-on-warning: 255 255 255;
+  --md-warning-container: 252 236 205;
+  --md-on-warning-container: 89 51 2;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: rgb(var(--md-surface-container));
+  color: rgb(var(--md-on-surface));
+}
+
+/* Desktop-first (PRD §2.1). No mobile layout is in scope, but the app must not
+   break catastrophically below 1280px — this keeps it scrollable rather than
+   crushed. */
+body {
+  min-width: 1280px;
+}
+
+/* A visible focus indicator is a WCAG 2.1 AA requirement (PRD §10.3). Browsers
+   only show :focus-visible for keyboard users, which is what we want, but the
+   default ring is easy to lose against our surfaces. */
+:focus-visible {
+  outline: 2px solid rgb(var(--md-primary));
+  outline-offset: 2px;
+}
+
+/* Honour the user's motion preference — PRD §10.3. Tailwind's motion-safe:
+   variant covers the animations we author; this catches everything else,
+   including smooth scrolling and any third-party CSS. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

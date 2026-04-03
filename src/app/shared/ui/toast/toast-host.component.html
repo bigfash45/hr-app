@@ -1,0 +1,81 @@
+<!--
+  Two separate live regions: assertive for errors, polite for everything else.
+  A single region cannot change politeness per message, and screen readers cache
+  the attribute when the region is created.
+-->
+<div class="pointer-events-none fixed bottom-6 right-6 z-40 flex w-full max-w-sm flex-col gap-3">
+  <div aria-live="assertive" aria-atomic="false" class="contents">
+    @for (toast of toasts(); track toast.id) {
+      @if (toast.tone === 'error') {
+        <ng-container [ngTemplateOutlet]="toastTpl" [ngTemplateOutletContext]="{ toast: toast }" />
+      }
+    }
+  </div>
+
+  <div aria-live="polite" aria-atomic="false" class="contents">
+    @for (toast of toasts(); track toast.id) {
+      @if (toast.tone !== 'error') {
+        <ng-container [ngTemplateOutlet]="toastTpl" [ngTemplateOutletContext]="{ toast: toast }" />
+      }
+    }
+  </div>
+</div>
+
+<ng-template #toastTpl let-toast="toast">
+  <div
+    class="pointer-events-auto flex items-start gap-3 rounded-xl px-4 py-3 shadow-toast motion-safe:animate-toast-in"
+    [class]="toneClass(toast.tone)"
+    role="status"
+  >
+    <span class="mt-0.5 shrink-0" aria-hidden="true">
+      @switch (toast.tone) {
+        @case ('success') {
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+          </svg>
+        }
+        @case ('warn') {
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+          </svg>
+        }
+        @case ('error') {
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        }
+        @default {
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4m0-4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        }
+      }
+    </span>
+
+    <p class="min-w-0 flex-1 text-body-md">
+      <span class="sr-only">{{ toneLabel(toast.tone) }}</span>
+      {{ toast.message }}
+    </p>
+
+    @if (toast.action) {
+      <button
+        type="button"
+        class="shrink-0 rounded px-2 py-0.5 text-label-md underline underline-offset-2 focus-visible:ring-2 focus-visible:ring-current"
+        (click)="runAction(toast.id, toast.action.run)"
+      >
+        {{ toast.action.label }}
+      </button>
+    }
+
+    <button
+      type="button"
+      class="shrink-0 rounded p-0.5 opacity-70 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-current"
+      [attr.aria-label]="'Dismiss: ' + toast.message"
+      (click)="dismiss(toast.id)"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6 6 18" />
+      </svg>
+    </button>
+  </div>
+</ng-template>
