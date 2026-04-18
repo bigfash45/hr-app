@@ -1,0 +1,160 @@
+<div class="bg-white rounded-2xl border border-gray-200 p-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h2 class="text-lg font-semibold text-gray-900">Organisational Chart</h2>
+      <p class="text-sm text-gray-500 mt-1">Company hierarchy and reporting structure</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">
+        <span class="i-lucide-maximize-2 text-[16px]"></span>
+        Fullscreen
+      </button>
+      <button class="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">
+        <span class="i-lucide-download text-[16px]"></span>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="flex items-center gap-4 mb-8 flex-wrap">
+    <span class="text-xs text-gray-500 font-medium">Departments:</span>
+    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">Executive</span>
+    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Technology</span>
+    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Engineering</span>
+    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700">Operations</span>
+    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-700">Quality Assurance</span>
+    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">Finance</span>
+  </div>
+
+  <!-- Org Chart -->
+  <div class="overflow-x-auto pb-6">
+    <div class="min-w-[900px]">
+      <!-- CEO Level -->
+      <div class="flex flex-col items-center">
+        <!-- CEO Card -->
+        <ng-container *ngTemplateOutlet="nodeCard; context: { $implicit: orgData, level: 0 }"></ng-container>
+
+        <!-- Connector line down from CEO -->
+        <div *ngIf="orgData.children && orgData.children.length > 0 && isExpanded(orgData.id)" class="w-px h-8 bg-gray-300"></div>
+
+        <!-- C-Level Row -->
+        <div *ngIf="orgData.children && orgData.children.length > 0 && isExpanded(orgData.id)" class="relative">
+          <!-- Horizontal connector line -->
+          <div class="absolute top-0 left-1/2 -translate-x-1/2 h-px bg-gray-300"
+               [style.width.px]="(orgData.children.length - 1) * 280"></div>
+
+          <div class="flex gap-8">
+            <div *ngFor="let child of orgData.children" class="flex flex-col items-center">
+              <!-- Vertical connector up -->
+              <div class="w-px h-4 bg-gray-300"></div>
+
+              <!-- Child Card -->
+              <ng-container *ngTemplateOutlet="nodeCard; context: { $implicit: child, level: 1 }"></ng-container>
+
+              <!-- Connector line down -->
+              <div *ngIf="child.children && child.children.length > 0 && isExpanded(child.id)" class="w-px h-6 bg-gray-300"></div>
+
+              <!-- Grandchildren Level -->
+              <div *ngIf="child.children && child.children.length > 0 && isExpanded(child.id)" class="relative">
+                <!-- Horizontal connector -->
+                <div *ngIf="child.children.length > 1" class="absolute top-0 left-1/2 -translate-x-1/2 h-px bg-gray-300"
+                     [style.width.px]="(child.children.length - 1) * 200"></div>
+
+                <div class="flex gap-4">
+                  <div *ngFor="let grandchild of child.children" class="flex flex-col items-center">
+                    <!-- Vertical connector up -->
+                    <div class="w-px h-4 bg-gray-300"></div>
+
+                    <!-- Grandchild Card -->
+                    <ng-container *ngTemplateOutlet="nodeCard; context: { $implicit: grandchild, level: 2 }"></ng-container>
+
+                    <!-- Connector line down -->
+                    <div *ngIf="grandchild.children && grandchild.children.length > 0 && isExpanded(grandchild.id)" class="w-px h-6 bg-gray-300"></div>
+
+                    <!-- Great-grandchildren -->
+                    <div *ngIf="grandchild.children && grandchild.children.length > 0 && isExpanded(grandchild.id)" class="relative">
+                      <div *ngIf="grandchild.children.length > 1" class="absolute top-0 left-1/2 -translate-x-1/2 h-px bg-gray-300"
+                           [style.width.px]="(grandchild.children.length - 1) * 160"></div>
+
+                      <div class="flex gap-3">
+                        <div *ngFor="let greatgrand of grandchild.children" class="flex flex-col items-center">
+                          <div class="w-px h-4 bg-gray-300"></div>
+                          <ng-container *ngTemplateOutlet="nodeCard; context: { $implicit: greatgrand, level: 3 }"></ng-container>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Node Card Template -->
+<ng-template #nodeCard let-node let-level="level">
+  <div class="bg-white border-2 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer group"
+       [ngClass]="{
+         'border-purple-300': node.department === 'Executive',
+         'border-blue-300': node.department === 'Technology',
+         'border-green-300': node.department === 'Engineering',
+         'border-orange-300': node.department === 'Operations',
+         'border-pink-300': node.department === 'Quality Assurance',
+         'border-yellow-300': node.department === 'Finance',
+         'w-[220px]': level === 0,
+         'w-[200px]': level === 1,
+         'w-[180px]': level === 2,
+         'w-[160px]': level >= 3
+       }"
+       (click)="node.children ? toggleNode(node.id) : null">
+    <div class="flex flex-col items-center text-center">
+      <!-- Avatar -->
+      <div class="relative mb-3">
+        <img [src]="node.avatar" class="rounded-full object-cover border-2 border-white shadow-sm"
+             [ngClass]="{
+               'h-16 w-16': level === 0,
+               'h-14 w-14': level === 1,
+               'h-12 w-12': level === 2,
+               'h-10 w-10': level >= 3
+             }" />
+        <div *ngIf="node.children && node.children.length > 0"
+             class="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-gray-100 border border-gray-200 grid place-items-center">
+          <span class="text-[10px] font-medium text-gray-600">{{ node.children.length }}</span>
+        </div>
+      </div>
+
+      <!-- Name -->
+      <div class="font-semibold text-gray-900 mb-0.5"
+           [ngClass]="{
+             'text-sm': level <= 1,
+             'text-xs': level >= 2
+           }">{{ node.name }}</div>
+
+      <!-- Role -->
+      <div class="text-gray-500 mb-2"
+           [ngClass]="{
+             'text-xs': level <= 1,
+             'text-[10px]': level >= 2
+           }">{{ node.role }}</div>
+
+      <!-- Department Badge -->
+      <span class="px-2 py-0.5 rounded-full font-medium border"
+            [ngClass]="getDepartmentColor(node.department)"
+            [class.text-[10px]]="true">
+        {{ node.department }}
+      </span>
+
+      <!-- Expand/Collapse Indicator -->
+      <div *ngIf="node.children && node.children.length > 0"
+           class="mt-2 text-gray-400 group-hover:text-gray-600 transition-colors">
+        <span *ngIf="isExpanded(node.id)" class="i-lucide-chevron-up text-[14px]"></span>
+        <span *ngIf="!isExpanded(node.id)" class="i-lucide-chevron-down text-[14px]"></span>
+      </div>
+    </div>
+  </div>
+</ng-template>
