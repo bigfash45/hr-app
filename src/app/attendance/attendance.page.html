@@ -1,0 +1,260 @@
+<div class="min-h-screen bg-[#F7F7F8] grid grid-cols-12">
+  <!-- Sidebar -->
+  <app-side-nav class="col-span-3 xl:col-span-2"></app-side-nav>
+
+  <!-- Right side: Top bar + Content -->
+  <div class="col-span-9 xl:col-span-10">
+    <!-- Top bar -->
+    <app-top-nav></app-top-nav>
+
+    <!-- Content -->
+    <section class="px-[25px] py-6">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Attendance</h1>
+          <p class="text-sm text-gray-500 mt-1">Monitor daily employee attendance and manage requests</p>
+        </div>
+        <button class="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <span class="i-lucide-upload text-[16px]"></span>
+          Export Report
+        </button>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <!-- Today's Attendance -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="flex items-center gap-2 text-gray-600 mb-3">
+            <span class="i-lucide-users text-[18px]"></span>
+            <span class="text-sm font-medium">Today's Attendance</span>
+          </div>
+          <div class="flex items-baseline gap-2 mb-2">
+            <span class="text-2xl font-bold text-gray-900">{{ stats.todayAttendance }}</span>
+            <span class="text-sm text-green-600">Present employees</span>
+          </div>
+          <div class="flex items-center gap-1 text-green-600">
+            <span class="i-lucide-home text-[14px]"></span>
+            <span class="text-xs">+20 this month</span>
+          </div>
+        </div>
+
+        <!-- Total Absent -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="flex items-center gap-2 text-gray-600 mb-3">
+            <span class="i-lucide-user-x text-[18px]"></span>
+            <span class="text-sm font-medium">Total Absent</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex items-baseline gap-1 mb-2">
+                <span class="text-2xl font-bold text-gray-900">{{ stats.totalAbsent }}</span>
+                <span class="text-sm text-gray-500">/{{ stats.totalEmployees }}</span>
+                <span class="text-sm text-gray-500 ml-1">Clocked in</span>
+              </div>
+              <div class="flex items-center gap-1 text-red-500">
+                <span class="i-lucide-alert-circle text-[14px]"></span>
+                <span class="text-xs">{{ stats.yetToClockIn }} yet to clock in today</span>
+              </div>
+            </div>
+            <!-- Progress Ring -->
+            <div class="relative h-12 w-12">
+              <svg class="h-12 w-12 -rotate-90" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15" fill="none" stroke="#e5e7eb" stroke-width="3"></circle>
+                <circle cx="18" cy="18" r="15" fill="none" stroke="#22c55e" stroke-width="3" stroke-dasharray="90 100" stroke-linecap="round"></circle>
+              </svg>
+              <span class="absolute inset-0 flex items-center justify-center text-xs font-semibold text-green-600">90%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Late Arrivals Today -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="flex items-center gap-2 text-gray-600 mb-3">
+            <span class="i-lucide-calendar-clock text-[18px]"></span>
+            <span class="text-sm font-medium">Late Arrivals Today</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex items-baseline gap-1 mb-2">
+                <span class="text-2xl font-bold text-gray-900">{{ stats.lateArrivals }}</span>
+                <span class="text-sm text-gray-500">/{{ stats.totalEmployees }}</span>
+                <span class="text-sm text-gray-500 ml-1">Employees on leave</span>
+              </div>
+              <a href="javascript:void(0)" class="flex items-center gap-1 text-blue-500 hover:text-blue-600">
+                <span class="i-lucide-eye text-[14px]"></span>
+                <span class="text-xs">View Attendance</span>
+              </a>
+            </div>
+            <!-- Progress Ring -->
+            <div class="relative h-12 w-12">
+              <svg class="h-12 w-12 -rotate-90" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15" fill="none" stroke="#e5e7eb" stroke-width="3"></circle>
+                <circle cx="18" cy="18" r="15" fill="none" stroke="#f97316" stroke-width="3" stroke-dasharray="75 100" stroke-linecap="round"></circle>
+              </svg>
+              <span class="absolute inset-0 flex items-center justify-center text-xs font-semibold text-orange-500">75%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- On Leave -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="flex items-center gap-2 text-gray-600 mb-3">
+            <span class="i-lucide-calendar-days text-[18px]"></span>
+            <span class="text-sm font-medium">On Leave</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex items-baseline gap-1 mb-2">
+                <span class="text-2xl font-bold text-gray-900">{{ stats.onLeave }}</span>
+                <span class="text-sm text-gray-500">/{{ stats.totalEmployees }}</span>
+                <span class="text-sm text-gray-500 ml-1">Employees on leave</span>
+              </div>
+              <a href="javascript:void(0)" class="flex items-center gap-1 text-blue-500 hover:text-blue-600">
+                <span class="i-lucide-calendar text-[14px]"></span>
+                <span class="text-xs">View Calendar</span>
+              </a>
+            </div>
+            <!-- Progress Ring -->
+            <div class="relative h-12 w-12">
+              <svg class="h-12 w-12 -rotate-90" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15" fill="none" stroke="#e5e7eb" stroke-width="3"></circle>
+                <circle cx="18" cy="18" r="15" fill="none" stroke="#22c55e" stroke-width="3" stroke-dasharray="75 100" stroke-linecap="round"></circle>
+              </svg>
+              <span class="absolute inset-0 flex items-center justify-center text-xs font-semibold text-green-600">75%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content: Table + Calendar -->
+      <div class="grid grid-cols-12 gap-6">
+        <!-- Left: Manage Employees Table -->
+        <div class="col-span-8 bg-white rounded-2xl border border-gray-200 p-6">
+          <!-- Table Header -->
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-semibold text-gray-900">Manage Employees</h2>
+            <div class="flex items-center gap-4">
+              <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-600 hover:bg-gray-50">
+                <span class="i-lucide-sliders-horizontal text-[16px] text-gray-500"></span>
+                Filter by
+                <span class="i-lucide-chevron-down text-[14px] text-gray-400"></span>
+              </button>
+              <div class="relative">
+                <span class="i-lucide-search text-[16px] text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"></span>
+                <input class="rounded-xl border border-gray-200 bg-white pl-11 pr-4 py-2.5 text-sm w-[180px] placeholder:text-gray-400 focus:outline-none focus:border-gray-300" placeholder="Search here" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-100">
+                  <th class="pb-4 font-normal">Employee Name</th>
+                  <th class="pb-4 font-normal">Department</th>
+                  <th class="pb-4 font-normal">Clock in/Out</th>
+                  <th class="pb-4 font-normal">Status</th>
+                  <th class="pb-4 font-normal"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let record of attendanceRecords" class="border-b border-gray-50">
+                  <td class="py-4">
+                    <div class="flex items-center gap-3">
+                      <img [src]="record.avatar" class="h-9 w-9 rounded-full object-cover" />
+                      <span class="text-gray-900">{{ record.name }}</span>
+                    </div>
+                  </td>
+                  <td class="py-4 text-gray-600">{{ record.department }}</td>
+                  <td class="py-4 text-gray-600">{{ formatClockTime(record) }}</td>
+                  <td class="py-4">
+                    <span class="px-3 py-1 rounded-full text-xs font-medium" [ngClass]="getStatusClass(record.status)">
+                      {{ record.status }}
+                    </span>
+                  </td>
+                  <td class="py-4">
+                    <button class="h-8 w-8 rounded-lg text-orange-400 hover:bg-orange-50 grid place-items-center">
+                      <span class="i-lucide-more-vertical text-[16px]"></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="flex items-center justify-center gap-2 mt-6">
+            <button (click)="goToPage(currentPage - 1)" class="h-8 w-8 rounded-lg border border-gray-200 text-gray-400 grid place-items-center hover:bg-gray-50" [disabled]="currentPage === 1">
+              <span class="i-lucide-chevron-left text-[14px]"></span>
+            </button>
+            <button *ngFor="let page of [1,2,3,4,5]" (click)="goToPage(page)"
+                    class="h-8 w-8 rounded-lg text-sm font-medium grid place-items-center"
+                    [ngClass]="currentPage === page ? 'bg-black text-white' : 'border border-gray-200 text-gray-600 hover:bg-gray-50'">
+              {{ page }}
+            </button>
+            <button (click)="goToPage(currentPage + 1)" class="h-8 w-8 rounded-lg border border-gray-200 text-gray-400 grid place-items-center hover:bg-gray-50" [disabled]="currentPage === totalPages">
+              <span class="i-lucide-chevron-right text-[14px]"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Calendar -->
+        <div class="col-span-4 bg-white rounded-2xl border border-gray-200 p-6">
+          <!-- Calendar Header -->
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-2">
+              <select class="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700 bg-white appearance-none cursor-pointer pr-8">
+                <option>2020</option>
+                <option>2021</option>
+                <option>2022</option>
+                <option>2023</option>
+                <option>2024</option>
+                <option>2025</option>
+              </select>
+              <select class="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700 bg-white appearance-none cursor-pointer pr-8">
+                <option *ngFor="let month of months; let i = index" [selected]="i === currentMonth">{{ month }}</option>
+              </select>
+            </div>
+            <div class="flex rounded-lg border border-gray-200 overflow-hidden">
+              <button (click)="setCalendarView('month')"
+                      class="px-3 py-1.5 text-xs font-medium transition-colors"
+                      [ngClass]="calendarView === 'month' ? 'bg-orange-100 text-orange-600' : 'bg-white text-gray-600 hover:bg-gray-50'">
+                Month
+              </button>
+              <button (click)="setCalendarView('year')"
+                      class="px-3 py-1.5 text-xs font-medium transition-colors"
+                      [ngClass]="calendarView === 'year' ? 'bg-orange-100 text-orange-600' : 'bg-white text-gray-600 hover:bg-gray-50'">
+                Year
+              </button>
+            </div>
+          </div>
+
+          <!-- Calendar Grid -->
+          <div class="grid grid-cols-7 gap-1">
+            <!-- Week Days Header -->
+            <div *ngFor="let day of weekDays" class="text-center text-xs font-medium text-gray-500 py-2">
+              {{ day }}
+            </div>
+
+            <!-- Calendar Days -->
+            <ng-container *ngFor="let day of getCalendarDays()">
+              <button
+                (click)="selectDay(day)"
+                class="h-9 w-9 rounded-full text-sm grid place-items-center mx-auto transition-colors"
+                [ngClass]="{
+                  'text-gray-900 hover:bg-gray-100': isCurrentMonth(day) && day !== selectedDay,
+                  'text-gray-300': isPreviousMonth(day) || isNextMonth(day),
+                  'bg-gray-900 text-white': isCurrentMonth(day) && day === selectedDay,
+                  'cursor-default': !isCurrentMonth(day)
+                }">
+                {{ getDisplayDay(day) }}
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
