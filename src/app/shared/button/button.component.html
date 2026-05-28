@@ -1,0 +1,13 @@
+<button
+  type="button"
+  [attr.type]="type"
+  [ngClass]="btnClass"
+  class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white bg-black hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+  [disabled]="disabled || loading"
+>
+  <svg *ngIf="loading" class="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="10" class="opacity-25" />
+    <path d="M22 12a10 10 0 0 1-10 10" class="opacity-75" />
+  </svg>
+  <ng-content />
+</button>
