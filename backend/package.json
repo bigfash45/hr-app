@@ -1,12 +1,12 @@
 {
   "name": "nownowhr-api",
   "version": "0.1.0",
-  "description": "NowNowHR — internal multi-tenant HRMS API for NowNow Digital Systems and sister companies",
+  "description": "NowNowHR \u2014 internal multi-tenant HRMS API for NowNow Digital Systems and sister companies",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
-    "start": "nest start",
+    "build": "node api.js && nest build",
+    "start": "node api.js && nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
